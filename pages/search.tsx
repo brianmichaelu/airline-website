@@ -119,7 +119,7 @@ const airports: Airport[] = [
 ];
 
 const fieldClass =
-  "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
+  "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 disabled:opacity-80 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:disabled:bg-slate-800 dark:disabled:text-slate-400";
 
 const suggestionBoxClass =
   "absolute left-0 top-full z-[80] mt-3 max-h-80 w-full min-w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-slate-700 dark:bg-slate-950 sm:min-w-[430px]";
@@ -243,22 +243,24 @@ export default function SearchPage() {
   return (
     <Layout
       title="Search Flights"
-      description="Compare mock airline tickets with filters, sorting, and responsive flight cards."
+      description="Search and compare available airline ticket options by route, date, airline, stops, and cabin class."
     >
       <section
         className="bg-flight-gradient px-4 pb-16 pt-12 text-white sm:px-6 lg:px-8"
         onClick={() => setActiveSuggestion(null)}
       >
         <div className="mx-auto max-w-7xl">
-          <p className="font-semibold text-blue-100">Search Results</p>
+          <p className="font-semibold text-blue-100">
+            Flight Search
+          </p>
 
           <h1 className="mt-2 text-4xl font-black sm:text-5xl">
-            Find your next airline ticket
+            Compare available flight options
           </h1>
 
           <p className="mt-3 max-w-2xl text-blue-50">
-            Search flights, compare fares, and continue to booking without
-            login, signup, hotels, or car rentals.
+            Select your route, travel dates, passengers, and cabin class to
+            find suitable airline ticket options.
           </p>
 
           <div onClick={(event) => event.stopPropagation()}>
@@ -472,7 +474,7 @@ export default function SearchPage() {
                     </span>
                     <input
                       type="date"
-                      className={`${fieldClass} disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 disabled:opacity-70 dark:disabled:bg-slate-800 dark:disabled:text-slate-400`}
+                      className={fieldClass}
                       value={returnDate}
                       onChange={(event) => setReturnDate(event.target.value)}
                       disabled={tripType === "one-way"}
@@ -523,7 +525,7 @@ export default function SearchPage() {
                 <div className="mt-4 rounded-2xl bg-blue-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-900 dark:text-slate-300">
                   {hasSearched ? (
                     <span>
-                      Showing demo fares for{" "}
+                      Showing available fares for{" "}
                       <strong className="text-navy dark:text-white">
                         {from}
                       </strong>{" "}
@@ -539,8 +541,8 @@ export default function SearchPage() {
                     </span>
                   ) : (
                     <span>
-                      Choose your route and dates above, then search to refresh
-                      the demo flight results.
+                      Choose your route and travel dates above, then search to
+                      view matching flight options.
                     </span>
                   )}
                 </div>
@@ -571,7 +573,8 @@ export default function SearchPage() {
                   {filteredFlights.length === 1 ? "flight" : "flights"} found
                 </h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Mock data from the frontend JSON file.
+                  Results based on your selected route, filters, and sorting
+                  preference.
                 </p>
               </div>
 
@@ -622,8 +625,9 @@ export default function SearchPage() {
                     <h3 className="text-2xl font-black text-navy dark:text-white">
                       No flights found
                     </h3>
-                    <p className="mt-2 text-slate-500">
-                      Try increasing the price range or clearing filters.
+                    <p className="mt-2 text-slate-500 dark:text-slate-400">
+                      Try adjusting your price range, airline, stops, or travel
+                      time filters.
                     </p>
                   </Card>
                 )}
