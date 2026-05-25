@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Briefcase, Clock, Plane } from "lucide-react";
+import { ArrowRight, Briefcase, Clock, Plane, Users } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { formatMoney } from "@/lib/format";
@@ -10,7 +11,32 @@ interface FlightCardProps {
   flight: Flight;
 }
 
+function getPassengerCount(value: string | string[] | undefined) {
+  if (typeof value === "string") {
+    const parsed = Number(value);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  if (Array.isArray(value)) {
+    const parsed = Number(value[0]);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return 1;
+}
+
 export default function FlightCard({ flight }: FlightCardProps) {
+  const router = useRouter();
+
+  const passengers = getPassengerCount(router.query.passengers);
+  const totalFare = flight.price * passengers;
+
   const stopsText =
     flight.stops === 0
       ? "Direct flight"
@@ -72,16 +98,27 @@ export default function FlightCard({ flight }: FlightCardProps) {
             </div>
           </div>
 
-          <div className="min-w-[190px] rounded-3xl bg-skysoft p-4 text-center dark:bg-white/10">
+          <div className="min-w-[210px] rounded-3xl bg-skysoft p-4 text-center dark:bg-white/10">
             <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
-              From
+              Per passenger
             </p>
 
             <p className="text-3xl font-black text-ocean">
               {formatMoney(flight.price, flight.currency)}
             </p>
 
-            <Button href={`/flight/${flight.id}`} className="mt-3 w-full">
+            <div className="mt-2 rounded-2xl bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300">
+              Total for {passengers}{" "}
+              {passengers === 1 ? "traveller" : "travellers"}:{" "}
+              <span className="text-navy dark:text-white">
+                {formatMoney(totalFare, flight.currency)}
+              </span>
+            </div>
+
+            <Button
+              href={`/flight/${flight.id}?passengers=${passengers}`}
+              className="mt-3 w-full"
+            >
               Select Flight
               <ArrowRight size={16} />
             </Button>
@@ -99,6 +136,11 @@ export default function FlightCard({ flight }: FlightCardProps) {
           <span className="inline-flex items-center gap-2">
             <Briefcase size={16} />
             {flight.baggage}
+          </span>
+
+          <span className="inline-flex items-center gap-2">
+            <Users size={16} />
+            {passengers} {passengers === 1 ? "traveller" : "travellers"}
           </span>
 
           {flight.tags.map((tag) => (
