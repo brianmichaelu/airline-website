@@ -15,13 +15,13 @@ export const flights: Flight[] = [
     tags: ["Best value", "Direct"],
     outbound: {
       from: { city: "Dar es Salaam", code: "DAR", country: "Tanzania" },
-      to: { city: "Dubai", code: "DXB", country: "UAE" },
+      to: { city: "Dubai", code: "DXB", country: "United Arab Emirates" },
       departureTime: "08:40",
       arrivalTime: "15:35",
       duration: "5h 55m",
     },
     returnSegment: {
-      from: { city: "Dubai", code: "DXB", country: "UAE" },
+      from: { city: "Dubai", code: "DXB", country: "United Arab Emirates" },
       to: { city: "Dar es Salaam", code: "DAR", country: "Tanzania" },
       departureTime: "21:10",
       arrivalTime: "03:55",
@@ -66,12 +66,19 @@ export const flights: Flight[] = [
     cabin: "Economy",
     baggage: "1 carry-on included",
     refundable: false,
-    tags: ["Budget", "Fastest"],
+    tags: ["Budget fare", "Fast route"],
     outbound: {
       from: { city: "Dar es Salaam", code: "DAR", country: "Tanzania" },
       to: { city: "Nairobi", code: "NBO", country: "Kenya" },
       departureTime: "06:25",
       arrivalTime: "07:45",
+      duration: "1h 20m",
+    },
+    returnSegment: {
+      from: { city: "Nairobi", code: "NBO", country: "Kenya" },
+      to: { city: "Dar es Salaam", code: "DAR", country: "Tanzania" },
+      departureTime: "18:30",
+      arrivalTime: "19:50",
       duration: "1h 20m",
     },
   },
@@ -86,16 +93,16 @@ export const flights: Flight[] = [
     cabin: "Premium Economy",
     baggage: "1 checked bag + extra legroom",
     refundable: true,
-    tags: ["Flexible ticket", "Popular"],
+    tags: ["Flexible ticket", "Popular route"],
     outbound: {
       from: { city: "Dar es Salaam", code: "DAR", country: "Tanzania" },
-      to: { city: "New York", code: "JFK", country: "USA" },
+      to: { city: "New York", code: "JFK", country: "United States" },
       departureTime: "23:50",
       arrivalTime: "14:25",
       duration: "18h 35m",
     },
     returnSegment: {
-      from: { city: "New York", code: "JFK", country: "USA" },
+      from: { city: "New York", code: "JFK", country: "United States" },
       to: { city: "Dar es Salaam", code: "DAR", country: "Tanzania" },
       departureTime: "18:00",
       arrivalTime: "20:15",
@@ -104,4 +111,5 @@ export const flights: Flight[] = [
   },
 ];
 
-export const getFlightById = (id: string) => flights.find((flight) => flight.id === id);
+export const getFlightById = (id: string) =>
+  flights.find((flight) => flight.id === id);
