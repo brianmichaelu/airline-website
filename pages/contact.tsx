@@ -1,3 +1,4 @@
+import { FormEvent, useState } from "react";
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Layout from "@/components/Layout";
 import Button from "@/components/ui/Button";
@@ -12,8 +13,58 @@ function getWhatsAppLink(message: string) {
 }
 
 export default function ContactPage() {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const whatsappMessage =
     "Hello SkyLink Travels, I need help with a flight reservation.";
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = new FormData(event.currentTarget);
+
+    const fullName = String(form.get("fullName") || "").trim();
+    const email = String(form.get("email") || "").trim();
+    const phone = String(form.get("phone") || "").trim();
+    const travelRoute = String(form.get("travelRoute") || "").trim();
+    const travelDate = String(form.get("travelDate") || "").trim();
+    const passengers = String(form.get("passengers") || "").trim();
+    const subject = String(form.get("subject") || "").trim();
+    const message = String(form.get("message") || "").trim();
+
+    const nextErrors: Record<string, string> = {};
+
+    if (!fullName) nextErrors.fullName = "Full name is required";
+    if (!phone) nextErrors.phone = "Phone / WhatsApp is required";
+    if (!travelRoute) nextErrors.travelRoute = "Travel route is required";
+
+    if (email && !email.includes("@")) {
+      nextErrors.email = "Enter a valid email address";
+    }
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
+    const preparedMessage = [
+      "Hello SkyLink Travels, I would like help with a flight booking.",
+      "",
+      `Full Name: ${fullName}`,
+      email ? `Email: ${email}` : "",
+      `Phone / WhatsApp: ${phone}`,
+      `Travel Route: ${travelRoute}`,
+      travelDate ? `Travel Date: ${travelDate}` : "",
+      passengers ? `Passengers: ${passengers}` : "",
+      subject ? `Subject: ${subject}` : "",
+      message ? `Message: ${message}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    window.open(getWhatsAppLink(preparedMessage), "_blank", "noopener,noreferrer");
+  };
 
   return (
     <Layout
@@ -143,31 +194,56 @@ export default function ContactPage() {
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  Tell us where you want to travel and our team will respond
-                  with suitable flight options.
+                  Fill in your travel request and we will prepare it for
+                  WhatsApp.
                 </p>
               </div>
             </div>
 
-            <form
-              className="mt-6 grid gap-4 sm:grid-cols-2"
-              onSubmit={(event) => event.preventDefault()}
-            >
-              <Input label="Full Name" placeholder="Your name" />
+            <form className="mt-6 grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
+              <Input
+                label="Full Name"
+                name="fullName"
+                placeholder="Your name"
+                error={errors.fullName}
+              />
 
-              <Input label="Email" type="email" placeholder="you@example.com" />
+              <Input
+                label="Email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                error={errors.email}
+              />
 
-              <Input label="Phone / WhatsApp" placeholder="+255689824682" />
+              <Input
+                label="Phone / WhatsApp"
+                name="phone"
+                placeholder="+255689824682"
+                error={errors.phone}
+              />
 
-              <Input label="Travel Route" placeholder="Dar es Salaam to Dubai" />
+              <Input
+                label="Travel Route"
+                name="travelRoute"
+                placeholder="Dar es Salaam to Dubai"
+                error={errors.travelRoute}
+              />
 
-              <Input label="Travel Date" type="date" />
+              <Input label="Travel Date" name="travelDate" type="date" />
 
-              <Input label="Passengers" type="number" placeholder="1" />
+              <Input
+                label="Passengers"
+                name="passengers"
+                type="number"
+                min={1}
+                placeholder="1"
+              />
 
               <div className="sm:col-span-2">
                 <Input
                   label="Subject"
+                  name="subject"
                   placeholder="Flight booking assistance"
                 />
               </div>
@@ -176,6 +252,7 @@ export default function ContactPage() {
                 <span className="label-style">Message</span>
 
                 <textarea
+                  name="message"
                   className="input-style min-h-36 resize-none bg-white text-slate-900 placeholder:text-slate-400 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500"
                   placeholder="Tell us your preferred destination, travel dates, number of passengers, and any special request..."
                 />
