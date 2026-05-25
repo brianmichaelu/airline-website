@@ -1,4 +1,4 @@
-import { Menu, Moon, Plane, Sun, X } from "lucide-react";
+import { Menu, MessageCircle, Moon, Plane, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
@@ -11,9 +11,18 @@ const navLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
+function getWhatsAppLink(message: string) {
+  const phone = siteConfig.whatsapp.replace(/\D/g, "");
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+
+  const whatsappMessage =
+    "Hello SkyLink Travels, I need help with a flight reservation.";
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -30,6 +39,7 @@ export default function Navbar() {
           <span className="grid h-10 w-10 place-items-center rounded-2xl bg-flight-gradient text-white shadow-lg shadow-blue-500/25">
             <Plane size={21} />
           </span>
+
           <span>{siteConfig.name}</span>
         </Link>
 
@@ -54,6 +64,16 @@ export default function Navbar() {
           >
             {dark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+
+          <a
+            href={getWhatsAppLink(whatsappMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-green-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-200 dark:focus:ring-green-950"
+          >
+            <MessageCircle size={18} />
+            WhatsApp
+          </a>
 
           <Button href="/search">Book Flight</Button>
         </div>
@@ -89,6 +109,17 @@ export default function Navbar() {
             >
               {dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             </button>
+
+            <a
+              href={getWhatsAppLink(whatsappMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 py-3 text-sm font-black text-white transition hover:bg-green-700"
+            >
+              <MessageCircle size={18} />
+              Chat on WhatsApp
+            </a>
 
             <Button href="/search" className="w-full justify-center">
               Book Flight
