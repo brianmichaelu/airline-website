@@ -1,8 +1,17 @@
-import { Mail, MapPin, Phone, Plane } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone, Plane } from "lucide-react";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site";
 
+function getWhatsAppLink(message: string) {
+  const phone = siteConfig.whatsapp.replace(/\D/g, "");
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
 export default function Footer() {
+  const whatsappMessage =
+    "Hello SkyLink Travels, I need help with a flight reservation.";
+
   return (
     <footer className="bg-navy px-4 py-12 text-white sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-4">
@@ -30,6 +39,25 @@ export default function Footer() {
               Regional & International Routes
             </span>
           </div>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={getWhatsAppLink(whatsappMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-green-700"
+            >
+              <MessageCircle size={18} />
+              Chat on WhatsApp
+            </a>
+
+            <Link
+              href="/search"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-navy transition hover:-translate-y-0.5 hover:bg-blue-50"
+            >
+              Search Flights
+            </Link>
+          </div>
         </div>
 
         <div>
@@ -55,21 +83,37 @@ export default function Footer() {
           <h3 className="font-black">Contact</h3>
 
           <div className="mt-4 space-y-3 text-sm text-blue-100">
-            <p className="flex items-center gap-2">
+            <a
+              href={`tel:${siteConfig.phone}`}
+              className="flex items-center gap-2 transition hover:text-white"
+            >
               <Phone size={16} />
               {siteConfig.phone}
-            </p>
+            </a>
 
-            <p className="flex items-center gap-2">
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="flex items-center gap-2 transition hover:text-white"
+            >
               <Mail size={16} />
               {siteConfig.email}
-            </p>
+            </a>
 
             <p className="flex items-center gap-2">
               <MapPin size={16} />
               {siteConfig.location}
             </p>
           </div>
+
+          <a
+            href={getWhatsAppLink(whatsappMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-black text-white transition hover:bg-white/20"
+          >
+            <MessageCircle size={16} />
+            WhatsApp Support
+          </a>
         </div>
       </div>
 
