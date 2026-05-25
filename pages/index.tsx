@@ -1,3 +1,4 @@
+import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import {
   BellRing,
@@ -6,6 +7,7 @@ import {
   CreditCard,
   Globe2,
   Headphones,
+  MessageCircle,
   PlaneTakeoff,
   SearchCheck,
   ShieldCheck,
@@ -16,6 +18,7 @@ import Hero from "@/components/Hero";
 import Layout from "@/components/Layout";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { siteConfig } from "@/lib/site";
 
 const features = [
   {
@@ -105,7 +108,42 @@ const stats = [
   { value: "5", label: "Payment options" },
 ];
 
+function getWhatsAppLink(message: string) {
+  const phone = siteConfig.whatsapp.replace(/\D/g, "");
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
 export default function HomePage() {
+  const [fareEmail, setFareEmail] = useState("");
+  const [fareError, setFareError] = useState("");
+
+  const handleFareUpdates = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const email = fareEmail.trim();
+
+    if (!email) {
+      setFareError("Please enter your email address.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setFareError("Please enter a valid email address.");
+      return;
+    }
+
+    setFareError("");
+
+    const message = [
+      "Hello SkyLink Travels, I would like to receive fare alerts and travel updates.",
+      "",
+      `Email: ${email}`,
+    ].join("\n");
+
+    window.location.href = getWhatsAppLink(message);
+  };
+
   return (
     <Layout
       title="SkyLink Travels"
@@ -340,14 +378,37 @@ export default function HomePage() {
               and travel support from SkyLink Travels.
             </p>
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <input
-                type="email"
-                className="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white px-4 py-3 font-semibold text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-blue-200 focus:ring-4 focus:ring-white/20"
-                placeholder="Enter email address"
-              />
-              <Button variant="secondary">Request Updates</Button>
-            </div>
+            <form
+              onSubmit={handleFareUpdates}
+              className="mt-6 flex flex-col gap-3 sm:flex-row"
+            >
+              <div className="min-w-0 flex-1">
+                <input
+                  type="email"
+                  value={fareEmail}
+                  onChange={(event) => {
+                    setFareEmail(event.target.value);
+                    setFareError("");
+                  }}
+                  className="w-full rounded-2xl border border-white/20 bg-white px-4 py-3 font-semibold text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-blue-200 focus:ring-4 focus:ring-white/20"
+                  placeholder="Enter email address"
+                />
+
+                {fareError && (
+                  <p className="mt-2 text-sm font-semibold text-white">
+                    {fareError}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-navy transition hover:-translate-y-0.5 hover:bg-blue-50"
+              >
+                <MessageCircle size={18} />
+                Request Updates
+              </button>
+            </form>
 
             <div className="mt-6 flex items-start gap-3 rounded-2xl bg-white/10 p-4 text-sm text-blue-50">
               <CheckCircle2 className="mt-0.5 shrink-0" size={18} />
