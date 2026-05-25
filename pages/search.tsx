@@ -21,6 +21,8 @@ type TripType = "round-trip" | "one-way";
 
 type CabinClass = "Economy" | "Premium Economy" | "Business" | "First Class";
 
+type DepartureTimeFilter = "Any time" | "Morning" | "Afternoon" | "Evening" | "Night";
+
 type Airport = {
   city: string;
   country: string;
@@ -177,6 +179,28 @@ function getSafeCabin(value: string): CabinClass {
     : "Economy";
 }
 
+function getDeparturePeriod(time: string): DepartureTimeFilter {
+  const hour = Number(time.split(":")[0]);
+
+  if (Number.isNaN(hour)) {
+    return "Any time";
+  }
+
+  if (hour >= 5 && hour < 12) {
+    return "Morning";
+  }
+
+  if (hour >= 12 && hour < 17) {
+    return "Afternoon";
+  }
+
+  if (hour >= 17 && hour < 21) {
+    return "Evening";
+  }
+
+  return "Night";
+}
+
 export default function SearchPage() {
   const router = useRouter();
 
@@ -194,6 +218,8 @@ export default function SearchPage() {
 
   const [selectedAirline, setSelectedAirline] = useState("All");
   const [selectedStops, setSelectedStops] = useState("Any");
+  const [selectedDepartureTime, setSelectedDepartureTime] =
+    useState<DepartureTimeFilter>("Any time");
   const [maxPrice, setMaxPrice] = useState(900);
   const [sort, setSort] = useState("recommended");
   const [loading, setLoading] = useState(false);
@@ -276,6 +302,12 @@ export default function SearchPage() {
       results = results.filter((flight) => flight.stops === 2);
     }
 
+    if (selectedDepartureTime !== "Any time") {
+      results = results.filter(
+        (flight) => getDeparturePeriod(flight.outbound.departureTime) === selectedDepartureTime
+      );
+    }
+
     if (sort === "price-low") {
       results = [...results].sort((a, b) => a.price - b.price);
     }
@@ -287,7 +319,7 @@ export default function SearchPage() {
     }
 
     return results;
-  }, [selectedAirline, selectedStops, maxPrice, sort]);
+  }, [selectedAirline, selectedStops, selectedDepartureTime, maxPrice, sort]);
 
   const simulateLoading = () => {
     setLoading(true);
@@ -665,6 +697,8 @@ export default function SearchPage() {
               setSelectedAirline={setSelectedAirline}
               selectedStops={selectedStops}
               setSelectedStops={setSelectedStops}
+              selectedDepartureTime={selectedDepartureTime}
+              setSelectedDepartureTime={setSelectedDepartureTime}
               maxPrice={maxPrice}
               setMaxPrice={setMaxPrice}
             />
@@ -712,6 +746,8 @@ export default function SearchPage() {
                 setSelectedAirline={setSelectedAirline}
                 selectedStops={selectedStops}
                 setSelectedStops={setSelectedStops}
+                selectedDepartureTime={selectedDepartureTime}
+                setSelectedDepartureTime={setSelectedDepartureTime}
                 maxPrice={maxPrice}
                 setMaxPrice={setMaxPrice}
               />
