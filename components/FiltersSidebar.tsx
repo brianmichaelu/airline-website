@@ -1,5 +1,12 @@
 import Card from "@/components/ui/Card";
 
+type DepartureTimeFilter =
+  | "Any time"
+  | "Morning"
+  | "Afternoon"
+  | "Evening"
+  | "Night";
+
 interface FiltersSidebarProps {
   selectedAirline: string;
   setSelectedAirline: (value: string) => void;
@@ -7,8 +14,8 @@ interface FiltersSidebarProps {
   setSelectedStops: (value: string) => void;
   maxPrice: number;
   setMaxPrice: (value: number) => void;
-  selectedDepartureTime?: string;
-  setSelectedDepartureTime?: (value: string) => void;
+  selectedDepartureTime?: DepartureTimeFilter;
+  setSelectedDepartureTime?: (value: DepartureTimeFilter) => void;
 }
 
 export default function FiltersSidebar({
@@ -29,7 +36,13 @@ export default function FiltersSidebar({
     "Nova Air",
   ];
 
-  const departureTimes = ["Any time", "Morning", "Afternoon", "Evening", "Night"];
+  const departureTimes: DepartureTimeFilter[] = [
+    "Any time",
+    "Morning",
+    "Afternoon",
+    "Evening",
+    "Night",
+  ];
 
   return (
     <Card className="sticky top-24 p-5">
