@@ -1,8 +1,30 @@
-# AirFare Direct - Airline Ticket Booking Website
+# SkyLink Travels - Airline Ticket Booking Website
 
-A modern responsive airline ticket booking frontend inspired by CheapOair-style search experiences, but simpler, cleaner, and strictly focused on airline tickets.
+SkyLink Travels is a modern responsive airline ticket booking website for searching, comparing, and reserving regional and international flight options.
 
-No login, signup, authentication, user dashboard, car rental, or backend payment integration is included.
+The website is designed for a travel agency, ticketing office, or airline reservation business that wants a clean online presence with a simple flight search and booking request flow.
+
+## Main Features
+
+- Modern responsive homepage
+- Flight search form
+- One-way and round-trip options
+- Departure and return date fields
+- Passenger count field
+- Cabin class selection
+- Airport and city suggestions
+- Flight results page
+- Flight filtering by airline, stops, price, and departure time
+- Flight details page
+- Passenger information form
+- Tanzania mobile money payment method selection
+- Booking confirmation page
+- About page
+- Contact page
+- Newsletter section
+- Dark mode support
+- Mobile-friendly navigation
+- Reusable components
 
 ## Tech Stack
 
@@ -11,11 +33,11 @@ No login, signup, authentication, user dashboard, car rental, or backend payment
 - Tailwind CSS
 - Framer Motion animations
 - Lucide React icons
-- Mock JSON flight data
-- Dark mode support
 - Responsive mobile-first layouts
+- Reusable UI components
+- PNG image assets
 
-## Demo Contacts Used
+## Business Contacts
 
 - Phone / WhatsApp: `+255689824682`
 - Email: `lubrun.enterprises@gmail.com`
@@ -76,57 +98,3 @@ Airline-website/
 ├── postcss.config.js
 ├── tailwind.config.ts
 └── tsconfig.json
-```
-
-## Installation Steps
-
-Open PowerShell in your project folder:
-
-```powershell
-cd "C:\Users\mwika\OneDrive\Desktop\Brian\Airline-website"
-```
-
-Install dependencies:
-
-```powershell
-npm.cmd install
-```
-
-Run locally:
-
-```powershell
-npm.cmd run dev
-```
-
-Open:
-
-```txt
-http://localhost:3000
-```
-
-Before pushing to GitHub or deploying on Vercel, test the build:
-
-```powershell
-npm.cmd run build
-```
-
-## GitHub Push Steps
-
-```powershell
-git init
-git add .
-git commit -m "Create airline ticket booking website"
-git branch -M main
-git remote add origin YOUR_GITHUB_REPOSITORY_URL
-git push -u origin main
-```
-
-Replace `YOUR_GITHUB_REPOSITORY_URL` with your real GitHub repository URL.
-
-## Notes
-
-- All images are `.png` placeholders inside `/public/images/`.
-- Flight data is stored in `data/flights.ts`.
-- Payment form is UI only. It does not process real payments.
-- Confirmation page is demo only. It does not issue real tickets.
-- This project is prepared for frontend portfolio/demo use and can be connected to real APIs later.
