@@ -7,6 +7,8 @@ interface FiltersSidebarProps {
   setSelectedStops: (value: string) => void;
   maxPrice: number;
   setMaxPrice: (value: number) => void;
+  selectedDepartureTime?: string;
+  setSelectedDepartureTime?: (value: string) => void;
 }
 
 export default function FiltersSidebar({
@@ -16,6 +18,8 @@ export default function FiltersSidebar({
   setSelectedStops,
   maxPrice,
   setMaxPrice,
+  selectedDepartureTime = "Any time",
+  setSelectedDepartureTime,
 }: FiltersSidebarProps) {
   const airlines = [
     "All",
@@ -25,7 +29,7 @@ export default function FiltersSidebar({
     "Nova Air",
   ];
 
-  const departureTimes = ["Morning", "Afternoon", "Evening", "Night"];
+  const departureTimes = ["Any time", "Morning", "Afternoon", "Evening", "Night"];
 
   return (
     <Card className="sticky top-24 p-5">
@@ -90,15 +94,24 @@ export default function FiltersSidebar({
           <label className="label-style">Departure Time</label>
 
           <div className="grid grid-cols-2 gap-2 text-sm">
-            {departureTimes.map((time) => (
-              <button
-                key={time}
-                type="button"
-                className="rounded-2xl border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700 transition hover:border-ocean hover:bg-blue-50 hover:text-ocean dark:border-white/10 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-blue-950/40 dark:hover:text-white"
-              >
-                {time}
-              </button>
-            ))}
+            {departureTimes.map((time) => {
+              const active = selectedDepartureTime === time;
+
+              return (
+                <button
+                  key={time}
+                  type="button"
+                  onClick={() => setSelectedDepartureTime?.(time)}
+                  className={`rounded-2xl border px-3 py-2 font-semibold transition ${
+                    active
+                      ? "border-ocean bg-blue-50 text-ocean ring-4 ring-blue-500/10 dark:border-blue-400 dark:bg-blue-950/40 dark:text-white"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-ocean hover:bg-blue-50 hover:text-ocean dark:border-white/10 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-blue-950/40 dark:hover:text-white"
+                  }`}
+                >
+                  {time}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
