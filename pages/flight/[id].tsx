@@ -1,11 +1,13 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import {
   ArrowRight,
   Briefcase,
   Clock,
   PlaneTakeoff,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import Button from "@/components/ui/Button";
@@ -18,9 +20,40 @@ interface FlightDetailsPageProps {
   flight: Flight;
 }
 
+function getPassengerCount(value: string | string[] | undefined) {
+  if (typeof value === "string") {
+    const parsed = Number(value);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  if (Array.isArray(value)) {
+    const parsed = Number(value[0]);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return 1;
+}
+
 export default function FlightDetailsPage({ flight }: FlightDetailsPageProps) {
-  const baseFare = flight.price - 52;
-  const taxesAndFees = 52;
+  const router = useRouter();
+
+  const passengers = getPassengerCount(router.query.passengers);
+
+  const taxesAndFeesPerPassenger = 52;
+  const baseFarePerPassenger = Math.max(
+    flight.price - taxesAndFeesPerPassenger,
+    0
+  );
+
+  const baseFareTotal = baseFarePerPassenger * passengers;
+  const taxesAndFeesTotal = taxesAndFeesPerPassenger * passengers;
+  const totalFare = flight.price * passengers;
 
   return (
     <Layout
@@ -36,8 +69,8 @@ export default function FlightDetailsPage({ flight }: FlightDetailsPageProps) {
           </h1>
 
           <p className="mt-3 max-w-2xl text-blue-50">
-            Review airline, route, baggage, ticket conditions, and fare details
-            before continuing to reservation checkout.
+            Review airline, route, baggage, ticket conditions, passenger count,
+            and fare details before continuing to reservation checkout.
           </p>
         </div>
       </section>
@@ -121,7 +154,7 @@ export default function FlightDetailsPage({ flight }: FlightDetailsPageProps) {
                 Included benefits
               </h2>
 
-              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <div className="mt-5 grid gap-4 sm:grid-cols-4">
                 <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
                   <Briefcase className="mb-3 text-ocean" />
                   <p className="font-bold text-slate-900 dark:text-white">
@@ -143,6 +176,16 @@ export default function FlightDetailsPage({ flight }: FlightDetailsPageProps) {
                 </div>
 
                 <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
+                  <Users className="mb-3 text-ocean" />
+                  <p className="font-bold text-slate-900 dark:text-white">
+                    Passengers
+                  </p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {passengers} {passengers === 1 ? "traveller" : "travellers"}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
                   <ShieldCheck className="mb-3 text-ocean" />
                   <p className="font-bold text-slate-900 dark:text-white">
                     Ticket rules
@@ -157,7 +200,7 @@ export default function FlightDetailsPage({ flight }: FlightDetailsPageProps) {
 
           <Card className="h-fit p-6">
             <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-              Total from
+              Fare per passenger
             </p>
 
             <p className="text-4xl font-black text-ocean">
@@ -165,7 +208,8 @@ export default function FlightDetailsPage({ flight }: FlightDetailsPageProps) {
             </p>
 
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              Fare includes estimated taxes and carrier fees.
+              Total fare is calculated for {passengers}{" "}
+              {passengers === 1 ? "traveller" : "travellers"}.
             </p>
 
             <div className="my-6 h-px bg-slate-200 dark:bg-white/10" />
@@ -174,19 +218,41 @@ export default function FlightDetailsPage({ flight }: FlightDetailsPageProps) {
               <div className="flex justify-between gap-4">
                 <span>Base fare</span>
                 <strong className="text-slate-900 dark:text-white">
-                  {formatMoney(baseFare, flight.currency)}
+                  {formatMoney(baseFareTotal, flight.currency)}
                 </strong>
               </div>
 
               <div className="flex justify-between gap-4">
                 <span>Taxes & fees</span>
                 <strong className="text-slate-900 dark:text-white">
-                  {formatMoney(taxesAndFees, flight.currency)}
+                  {formatMoney(taxesAndFeesTotal, flight.currency)}
+                </strong>
+              </div>
+
+              <div className="flex justify-between gap-4">
+                <span>Passengers</span>
+                <strong className="text-slate-900 dark:text-white">
+                  {passengers}
                 </strong>
               </div>
             </div>
 
-            <Button href={`/checkout?flight=${flight.id}`} className="mt-6 w-full">
+            <div className="my-6 h-px bg-slate-200 dark:bg-white/10" />
+
+            <div className="flex items-center justify-between gap-4">
+              <span className="font-black text-slate-900 dark:text-white">
+                Total fare
+              </span>
+
+              <span className="text-3xl font-black text-ocean">
+                {formatMoney(totalFare, flight.currency)}
+              </span>
+            </div>
+
+            <Button
+              href={`/checkout?flight=${flight.id}&passengers=${passengers}`}
+              className="mt-6 w-full"
+            >
               Continue Reservation
               <ArrowRight size={16} />
             </Button>
