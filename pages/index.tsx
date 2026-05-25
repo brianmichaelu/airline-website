@@ -3,9 +3,11 @@ import {
   BellRing,
   CheckCircle2,
   Clock3,
+  CreditCard,
   Globe2,
   Headphones,
   PlaneTakeoff,
+  SearchCheck,
   ShieldCheck,
   Ticket,
 } from "lucide-react";
@@ -30,6 +32,24 @@ const features = [
     icon: Headphones,
     title: "Local travel support",
     text: "Get help with flight options, booking changes, travel dates, and passenger details from a responsive reservations team.",
+  },
+];
+
+const bookingSteps = [
+  {
+    icon: SearchCheck,
+    title: "Search your route",
+    text: "Choose your departure city, destination, travel dates, passengers, and cabin class.",
+  },
+  {
+    icon: PlaneTakeoff,
+    title: "Select a flight",
+    text: "Compare available options by airline, fare, baggage, travel time, and number of stops.",
+  },
+  {
+    icon: CreditCard,
+    title: "Confirm reservation",
+    text: "Submit traveller details and choose a preferred payment method for booking follow-up.",
   },
 ];
 
@@ -145,6 +165,51 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <Card className="overflow-hidden bg-white p-6 dark:bg-white/5 lg:p-8">
+            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+              <div>
+                <p className="font-bold text-ocean">How booking works</p>
+                <h2 className="mt-2 text-3xl font-black text-navy dark:text-white sm:text-4xl">
+                  From search to reservation in three simple steps.
+                </h2>
+                <p className="mt-4 text-slate-600 dark:text-slate-300">
+                  The booking flow is designed to help travellers compare flight
+                  options clearly before submitting reservation details for
+                  follow-up.
+                </p>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                {bookingSteps.map((step, index) => (
+                  <div
+                    key={step.title}
+                    className="relative rounded-3xl border border-slate-200 bg-slate-50 p-5 dark:border-white/10 dark:bg-slate-900"
+                  >
+                    <span className="absolute right-5 top-5 text-4xl font-black text-slate-200 dark:text-white/10">
+                      0{index + 1}
+                    </span>
+
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/50">
+                      <step.icon size={22} />
+                    </span>
+
+                    <h3 className="mt-5 font-black text-navy dark:text-white">
+                      {step.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      {step.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
         </div>
       </section>
 
@@ -268,11 +333,11 @@ export default function HomePage() {
           <Card className="relative overflow-hidden bg-flight-gradient p-8 text-white">
             <BellRing className="mb-5" size={40} />
             <h2 className="text-3xl font-black">
-              Get fare alerts and travel updates.
+              Request fare alerts and travel updates.
             </h2>
             <p className="mt-3 text-blue-50">
-              Subscribe to receive special fare alerts, seasonal travel offers,
-              and destination updates from SkyLink Travels.
+              Leave your email to receive route updates, seasonal fare alerts,
+              and travel support from SkyLink Travels.
             </p>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -281,14 +346,15 @@ export default function HomePage() {
                 className="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white px-4 py-3 font-semibold text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-blue-200 focus:ring-4 focus:ring-white/20"
                 placeholder="Enter email address"
               />
-              <Button variant="secondary">Subscribe</Button>
+              <Button variant="secondary">Request Updates</Button>
             </div>
 
             <div className="mt-6 flex items-start gap-3 rounded-2xl bg-white/10 p-4 text-sm text-blue-50">
               <CheckCircle2 className="mt-0.5 shrink-0" size={18} />
               <p>
                 Customers can also contact our reservations team directly for
-                route advice, fare checks, and booking assistance.
+                route advice, fare checks, passenger details, and booking
+                assistance.
               </p>
             </div>
           </Card>
