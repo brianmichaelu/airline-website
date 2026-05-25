@@ -1,6 +1,7 @@
 import {
   Banknote,
   CheckCircle2,
+  Info,
   LockKeyhole,
   Phone,
   Smartphone,
@@ -52,8 +53,30 @@ const paymentMethods: {
   },
 ];
 
+function getPassengerCount(value: string | string[] | undefined) {
+  if (typeof value === "string") {
+    const parsed = Number(value);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  if (Array.isArray(value)) {
+    const parsed = Number(value[0]);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return 1;
+}
+
 export default function BookingForm() {
   const router = useRouter();
+
+  const passengers = getPassengerCount(router.query.passengers);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -98,7 +121,9 @@ export default function BookingForm() {
 
       setTimeout(() => {
         router.push(
-          `/confirmation?method=${encodeURIComponent(paymentMethod)}`
+          `/confirmation?method=${encodeURIComponent(
+            paymentMethod
+          )}&passengers=${passengers}`
         );
       }, 900);
     }
@@ -107,18 +132,34 @@ export default function BookingForm() {
   return (
     <form onSubmit={submit} className="space-y-8">
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-white/5">
-        <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/40">
+        <div className="flex items-start gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/40">
             <UserRound size={22} />
           </span>
 
           <div>
             <h2 className="text-xl font-black text-navy dark:text-white">
-              Passenger Information
+              Lead Passenger Details
             </h2>
+
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Enter traveller details exactly as they should appear on the
-              airline ticket.
+              Enter the main traveller&apos;s details exactly as they should
+              appear on the airline ticket.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-2xl bg-blue-50 p-4 text-sm text-slate-700 dark:bg-slate-900 dark:text-slate-300">
+          <div className="flex gap-3">
+            <Info size={18} className="mt-0.5 shrink-0 text-blue-600" />
+
+            <p>
+              This reservation is for{" "}
+              <strong className="text-navy dark:text-white">
+                {passengers} {passengers === 1 ? "traveller" : "travellers"}
+              </strong>
+              . Enter the lead passenger now. Our reservations team will confirm
+              any additional traveller details before ticketing.
             </p>
           </div>
         </div>
@@ -186,12 +227,21 @@ export default function BookingForm() {
               placeholder="Enter passport or national ID"
             />
           </label>
+
+          <label className="sm:col-span-2">
+            <span className={labelClass}>Special Request</span>
+            <textarea
+              name="specialRequest"
+              className={`${fieldClass} min-h-28 resize-none`}
+              placeholder="Example: preferred contact time, extra baggage question, passenger names, or travel assistance request"
+            />
+          </label>
         </div>
       </section>
 
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-white/5">
-        <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/40">
+        <div className="flex items-start gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/40">
             <Wallet size={22} />
           </span>
 
@@ -199,6 +249,7 @@ export default function BookingForm() {
             <h2 className="text-xl font-black text-navy dark:text-white">
               Payment Method
             </h2>
+
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Choose how you would like to receive payment instructions for this
               reservation.
@@ -226,6 +277,7 @@ export default function BookingForm() {
                     <p className="font-black text-navy dark:text-white">
                       {method.name}
                     </p>
+
                     <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                       {method.description}
                     </p>
@@ -250,6 +302,7 @@ export default function BookingForm() {
                 size={17}
                 className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               />
+
               <input
                 name="paymentPhone"
                 className={`${fieldClass} pl-11`}
@@ -278,6 +331,7 @@ export default function BookingForm() {
               size={18}
               className="mt-0.5 shrink-0 text-blue-600"
             />
+
             <p>
               Your selected payment method is{" "}
               <strong className="text-navy dark:text-white">
