@@ -1,4 +1,5 @@
 import {
+  ArrowLeftRight,
   CalendarDays,
   MapPin,
   Plane,
@@ -118,25 +119,26 @@ const airports: Airport[] = [
 ];
 
 const fieldClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
+  "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
 
 const suggestionBoxClass =
-  "absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-slate-700 dark:bg-slate-950";
+  "absolute left-0 top-full z-[80] mt-3 max-h-80 w-full min-w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-slate-700 dark:bg-slate-950 sm:min-w-[430px]";
 
 function getAirportSuggestions(value: string) {
   const searchValue = value.trim().toLowerCase();
 
   if (!searchValue) {
-    return airports.slice(0, 6);
+    return airports.slice(0, 7);
   }
 
   return airports
     .filter((airport) => {
-      const searchableText = `${airport.city} ${airport.country} ${airport.airport} ${airport.code}`.toLowerCase();
+      const searchableText =
+        `${airport.city} ${airport.country} ${airport.airport} ${airport.code}`.toLowerCase();
 
       return searchableText.includes(searchValue);
     })
-    .slice(0, 6);
+    .slice(0, 7);
 }
 
 function formatAirportValue(airport: Airport) {
@@ -153,9 +155,9 @@ export default function SearchPage() {
   const [passengers, setPassengers] = useState(1);
   const [cabinClass, setCabinClass] = useState("Economy");
 
-  const [activeSuggestion, setActiveSuggestion] = useState<"from" | "to" | null>(
-    null
-  );
+  const [activeSuggestion, setActiveSuggestion] = useState<
+    "from" | "to" | null
+  >(null);
 
   const [selectedAirline, setSelectedAirline] = useState("All");
   const [selectedStops, setSelectedStops] = useState("Any");
@@ -232,12 +234,21 @@ export default function SearchPage() {
     setActiveSuggestion(null);
   };
 
+  const swapRoute = () => {
+    setFrom(to);
+    setTo(from);
+    setActiveSuggestion(null);
+  };
+
   return (
     <Layout
       title="Search Flights"
       description="Compare mock airline tickets with filters, sorting, and responsive flight cards."
     >
-      <section className="bg-flight-gradient px-4 pb-16 pt-12 text-white sm:px-6 lg:px-8">
+      <section
+        className="bg-flight-gradient px-4 pb-16 pt-12 text-white sm:px-6 lg:px-8"
+        onClick={() => setActiveSuggestion(null)}
+      >
         <div className="mx-auto max-w-7xl">
           <p className="font-semibold text-blue-100">Search Results</p>
 
@@ -250,7 +261,10 @@ export default function SearchPage() {
             login, signup, hotels, or car rentals.
           </p>
 
-          <Card className="mt-8 border-white/20 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:bg-slate-950/95 sm:p-5">
+          <Card
+            className="mt-8 overflow-visible border-white/20 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:bg-slate-950/95 sm:p-5"
+            onClick={(event) => event.stopPropagation()}
+          >
             <form onSubmit={handleSearch}>
               <div className="mb-5 flex flex-wrap gap-3">
                 <button
@@ -281,7 +295,7 @@ export default function SearchPage() {
                 </button>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.1fr_1.1fr_1fr_1fr_0.8fr_1fr_auto]">
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.15fr_auto_1.15fr_1fr_1fr_0.8fr_1fr_auto]">
                 <label className="relative block">
                   <span className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
                     <Plane size={16} />
@@ -292,6 +306,10 @@ export default function SearchPage() {
                     className={fieldClass}
                     value={from}
                     onFocus={() => setActiveSuggestion("from")}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setActiveSuggestion("from");
+                    }}
                     onChange={(event) => {
                       setFrom(event.target.value);
                       setActiveSuggestion("from");
@@ -301,40 +319,59 @@ export default function SearchPage() {
                   />
 
                   {activeSuggestion === "from" && (
-                    <div className={suggestionBoxClass}>
+                    <div
+                      className={suggestionBoxClass}
+                      onClick={(event) => event.stopPropagation()}
+                    >
                       {fromSuggestions.length > 0 ? (
                         fromSuggestions.map((airport) => (
                           <button
                             key={`${airport.code}-from`}
                             type="button"
                             onMouseDown={() => chooseFromAirport(airport)}
-                            className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-blue-50 dark:hover:bg-slate-900"
+                            className="flex w-full items-start gap-4 rounded-2xl px-4 py-4 text-left transition hover:bg-blue-50 dark:hover:bg-slate-900"
                           >
-                            <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40">
-                              <MapPin size={17} />
+                            <span className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/40">
+                              <MapPin size={18} />
                             </span>
 
-                            <span>
-                              <span className="block font-black text-navy dark:text-white">
-                                {airport.city}{" "}
-                                <span className="text-blue-600">
-                                  ({airport.code})
+                            <span className="min-w-0 flex-1">
+                              <span className="flex flex-wrap items-center gap-2 text-base font-black leading-snug text-navy dark:text-white">
+                                {airport.city}
+                                <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-black text-white">
+                                  {airport.code}
                                 </span>
                               </span>
-                              <span className="mt-0.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                {airport.airport} • {airport.country}
+
+                              <span className="mt-1 block text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+                                {airport.airport}
+                              </span>
+
+                              <span className="mt-1 block text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                                {airport.country}
                               </span>
                             </span>
                           </button>
                         ))
                       ) : (
-                        <p className="px-3 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        <p className="px-4 py-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
                           No matching airport found.
                         </p>
                       )}
                     </div>
                   )}
                 </label>
+
+                <div className="hidden items-end justify-center xl:flex">
+                  <button
+                    type="button"
+                    onClick={swapRoute}
+                    className="mb-0 grid h-[46px] w-[46px] place-items-center rounded-full border border-slate-200 bg-white text-blue-600 shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-50 hover:shadow-md dark:border-slate-700 dark:bg-slate-900"
+                    aria-label="Swap route"
+                  >
+                    <ArrowLeftRight size={18} />
+                  </button>
+                </div>
 
                 <label className="relative block">
                   <span className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
@@ -346,6 +383,10 @@ export default function SearchPage() {
                     className={fieldClass}
                     value={to}
                     onFocus={() => setActiveSuggestion("to")}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setActiveSuggestion("to");
+                    }}
                     onChange={(event) => {
                       setTo(event.target.value);
                       setActiveSuggestion("to");
@@ -355,40 +396,61 @@ export default function SearchPage() {
                   />
 
                   {activeSuggestion === "to" && (
-                    <div className={suggestionBoxClass}>
+                    <div
+                      className={suggestionBoxClass}
+                      onClick={(event) => event.stopPropagation()}
+                    >
                       {toSuggestions.length > 0 ? (
                         toSuggestions.map((airport) => (
                           <button
                             key={`${airport.code}-to`}
                             type="button"
                             onMouseDown={() => chooseToAirport(airport)}
-                            className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-blue-50 dark:hover:bg-slate-900"
+                            className="flex w-full items-start gap-4 rounded-2xl px-4 py-4 text-left transition hover:bg-blue-50 dark:hover:bg-slate-900"
                           >
-                            <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40">
-                              <MapPin size={17} />
+                            <span className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/40">
+                              <MapPin size={18} />
                             </span>
 
-                            <span>
-                              <span className="block font-black text-navy dark:text-white">
-                                {airport.city}{" "}
-                                <span className="text-blue-600">
-                                  ({airport.code})
+                            <span className="min-w-0 flex-1">
+                              <span className="flex flex-wrap items-center gap-2 text-base font-black leading-snug text-navy dark:text-white">
+                                {airport.city}
+                                <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-black text-white">
+                                  {airport.code}
                                 </span>
                               </span>
-                              <span className="mt-0.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                {airport.airport} • {airport.country}
+
+                              <span className="mt-1 block text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+                                {airport.airport}
+                              </span>
+
+                              <span className="mt-1 block text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                                {airport.country}
                               </span>
                             </span>
                           </button>
                         ))
                       ) : (
-                        <p className="px-3 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        <p className="px-4 py-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
                           No matching airport found.
                         </p>
                       )}
                     </div>
                   )}
                 </label>
+
+                <div className="flex items-end xl:hidden">
+                  <button
+                    type="button"
+                    onClick={swapRoute}
+                    className="grid h-[46px] w-full place-items-center rounded-2xl border border-slate-200 bg-white text-blue-600 shadow-sm transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-900"
+                  >
+                    <span className="flex items-center gap-2 text-sm font-black">
+                      <ArrowLeftRight size={17} />
+                      Swap route
+                    </span>
+                  </button>
+                </div>
 
                 <label className="block">
                   <span className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
@@ -502,8 +564,8 @@ export default function SearchPage() {
             <Card className="mb-6 flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="font-black text-navy dark:text-white">
-                  {filteredFlights.length} flight
-                  {filteredFlights.length === 1 ? "" : "s"} found
+                  {filteredFlights.length}{" "}
+                  {filteredFlights.length === 1 ? "flight" : "flights"} found
                 </h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   Mock data from the frontend JSON file.
@@ -529,6 +591,11 @@ export default function SearchPage() {
             </Card>
 
             <div className="mb-6 block lg:hidden">
+              <div className="mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                <SlidersHorizontal size={16} />
+                Filter Results
+              </div>
+
               <FiltersSidebar
                 selectedAirline={selectedAirline}
                 setSelectedAirline={setSelectedAirline}
