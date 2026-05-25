@@ -21,7 +21,12 @@ type TripType = "round-trip" | "one-way";
 
 type CabinClass = "Economy" | "Premium Economy" | "Business" | "First Class";
 
-type DepartureTimeFilter = "Any time" | "Morning" | "Afternoon" | "Evening" | "Night";
+type DepartureTimeFilter =
+  | "Any time"
+  | "Morning"
+  | "Afternoon"
+  | "Evening"
+  | "Night";
 
 type Airport = {
   city: string;
@@ -127,7 +132,7 @@ const fieldClass =
   "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 disabled:opacity-80 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:disabled:bg-slate-800 dark:disabled:text-slate-400";
 
 const suggestionBoxClass =
-  "absolute left-0 top-full z-[80] mt-3 max-h-80 w-full min-w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-slate-700 dark:bg-slate-950 sm:min-w-[430px]";
+  "absolute left-0 top-full z-[9999] mt-3 max-h-72 w-full min-w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-slate-700 dark:bg-slate-950 sm:min-w-[430px]";
 
 function getAirportSuggestions(value: string) {
   const searchValue = value.trim().toLowerCase();
@@ -205,8 +210,8 @@ export default function SearchPage() {
   const router = useRouter();
 
   const [tripType, setTripType] = useState<TripType>("round-trip");
-  const [from, setFrom] = useState("Dar es Salaam");
-  const [to, setTo] = useState("Dubai");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
@@ -238,21 +243,10 @@ export default function SearchPage() {
     const queryCabin = getQueryString(router.query.cabin);
     const queryTripType = getQueryString(router.query.tripType);
 
-    if (queryFrom) {
-      setFrom(queryFrom);
-    }
-
-    if (queryTo) {
-      setTo(queryTo);
-    }
-
-    if (queryDepartureDate) {
-      setDepartureDate(queryDepartureDate);
-    }
-
-    if (queryReturnDate) {
-      setReturnDate(queryReturnDate);
-    }
+    setFrom(queryFrom);
+    setTo(queryTo);
+    setDepartureDate(queryDepartureDate);
+    setReturnDate(queryReturnDate);
 
     if (queryPassengers) {
       const parsedPassengers = Number(queryPassengers);
@@ -277,8 +271,24 @@ export default function SearchPage() {
 
     if (queryFrom || queryTo || queryDepartureDate || queryReturnDate) {
       setHasSearched(true);
+    } else {
+      setHasSearched(false);
     }
   }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    const closeWithEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveSuggestion(null);
+      }
+    };
+
+    window.addEventListener("keydown", closeWithEscape);
+
+    return () => {
+      window.removeEventListener("keydown", closeWithEscape);
+    };
+  }, []);
 
   const fromSuggestions = useMemo(() => getAirportSuggestions(from), [from]);
   const toSuggestions = useMemo(() => getAirportSuggestions(to), [to]);
@@ -304,7 +314,9 @@ export default function SearchPage() {
 
     if (selectedDepartureTime !== "Any time") {
       results = results.filter(
-        (flight) => getDeparturePeriod(flight.outbound.departureTime) === selectedDepartureTime
+        (flight) =>
+          getDeparturePeriod(flight.outbound.departureTime) ===
+          selectedDepartureTime
       );
     }
 
@@ -383,10 +395,10 @@ export default function SearchPage() {
       description="Search and compare available airline ticket options by route, date, airline, stops, and cabin class."
     >
       <section
-        className="bg-flight-gradient px-4 pb-16 pt-12 text-white sm:px-6 lg:px-8"
+        className="relative z-40 overflow-visible bg-flight-gradient px-4 pb-16 pt-12 text-white sm:px-6 lg:px-8"
         onClick={() => setActiveSuggestion(null)}
       >
-        <div className="mx-auto max-w-7xl">
+        <div className="relative z-50 mx-auto max-w-7xl">
           <p className="font-semibold text-blue-100">Flight Search</p>
 
           <h1 className="mt-2 text-4xl font-black sm:text-5xl">
@@ -398,8 +410,8 @@ export default function SearchPage() {
             find suitable airline ticket options.
           </p>
 
-          <div onClick={(event) => event.stopPropagation()}>
-            <Card className="mt-8 overflow-visible border-white/20 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:bg-slate-950/95 sm:p-5">
+          <div className="relative z-[500] mt-8">
+            <Card className="overflow-visible border-white/20 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:bg-slate-950/95 sm:p-5">
               <form onSubmit={handleSearch}>
                 <div className="mb-5 flex flex-wrap gap-3">
                   <button
@@ -431,7 +443,7 @@ export default function SearchPage() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.15fr_auto_1.15fr_1fr_1fr_0.8fr_1fr_auto]">
-                  <label className="relative block">
+                  <label className="relative z-[700] block">
                     <span className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
                       <Plane size={16} />
                       From
@@ -449,7 +461,7 @@ export default function SearchPage() {
                         setFrom(event.target.value);
                         setActiveSuggestion("from");
                       }}
-                      placeholder="Dar es Salaam"
+                      placeholder="From city or airport"
                       autoComplete="off"
                     />
 
@@ -508,7 +520,7 @@ export default function SearchPage() {
                     </button>
                   </div>
 
-                  <label className="relative block">
+                  <label className="relative z-[650] block">
                     <span className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
                       <Plane size={16} />
                       To
@@ -526,7 +538,7 @@ export default function SearchPage() {
                         setTo(event.target.value);
                         setActiveSuggestion("to");
                       }}
-                      placeholder="Dubai"
+                      placeholder="To city or airport"
                       autoComplete="off"
                     />
 
@@ -659,16 +671,19 @@ export default function SearchPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-2xl bg-blue-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                <div
+                  className="mt-4 rounded-2xl bg-blue-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-900 dark:text-slate-300"
+                  onClick={() => setActiveSuggestion(null)}
+                >
                   {hasSearched ? (
                     <span>
                       Showing available fares for{" "}
                       <strong className="text-navy dark:text-white">
-                        {from}
+                        {from || "your selected origin"}
                       </strong>{" "}
                       to{" "}
                       <strong className="text-navy dark:text-white">
-                        {to}
+                        {to || "your selected destination"}
                       </strong>
                       {departureDate && <> departing {departureDate}</>}
                       {tripType === "round-trip" && returnDate && (
@@ -689,7 +704,10 @@ export default function SearchPage() {
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
+      <section
+        className="relative z-0 px-4 py-10 sm:px-6 lg:px-8"
+        onClick={() => setActiveSuggestion(null)}
+      >
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[300px_1fr]">
           <aside className="hidden lg:block">
             <FiltersSidebar
