@@ -1,14 +1,12 @@
 import { FormEvent, useState } from "react";
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Layout from "@/components/Layout";
-import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import { siteConfig } from "@/lib/site";
 
 function getWhatsAppLink(message: string) {
   const phone = siteConfig.whatsapp.replace(/\D/g, "");
-
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
 
@@ -63,7 +61,7 @@ export default function ContactPage() {
       .filter(Boolean)
       .join("\n");
 
-    window.open(getWhatsAppLink(preparedMessage), "_blank", "noopener,noreferrer");
+    window.location.href = getWhatsAppLink(preparedMessage);
   };
 
   return (
@@ -194,13 +192,16 @@ export default function ContactPage() {
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  Fill in your travel request and we will prepare it for
+                  Fill in your travel request and send it directly through
                   WhatsApp.
                 </p>
               </div>
             </div>
 
-            <form className="mt-6 grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
+            <form
+              className="mt-6 grid gap-4 sm:grid-cols-2"
+              onSubmit={handleSubmit}
+            >
               <Input
                 label="Full Name"
                 name="fullName"
@@ -259,7 +260,13 @@ export default function ContactPage() {
               </label>
 
               <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row">
-                <Button type="submit">Send Message</Button>
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-ocean px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-blue-700"
+                >
+                  <MessageCircle size={18} />
+                  Send Message
+                </button>
 
                 <a
                   href={getWhatsAppLink(
