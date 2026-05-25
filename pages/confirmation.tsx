@@ -1,11 +1,25 @@
-import { CheckCircle2, Download, Mail, PlaneTakeoff } from "lucide-react";
+import {
+  CheckCircle2,
+  Mail,
+  MessageCircle,
+  Phone,
+  PlaneTakeoff,
+} from "lucide-react";
 import Layout from "@/components/Layout";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { siteConfig } from "@/lib/site";
 
+function getWhatsAppLink(message: string) {
+  const phone = siteConfig.whatsapp.replace(/\D/g, "");
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
 export default function ConfirmationPage() {
   const bookingRef = "SKY-" + Math.floor(100000 + Math.random() * 900000);
+
+  const whatsappMessage = `Hello SkyLink Travels, I have submitted a flight reservation request. My booking reference is ${bookingRef}. Please assist me with the next steps.`;
 
   return (
     <Layout
@@ -56,15 +70,45 @@ export default function ConfirmationPage() {
               </div>
             </div>
 
+            <div className="mx-auto mt-6 max-w-xl rounded-3xl border border-slate-200 p-5 text-left dark:border-white/10">
+              <h2 className="font-black text-navy dark:text-white">
+                Need urgent assistance?
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                Contact our reservations team and quote your booking reference{" "}
+                <strong className="text-navy dark:text-white">
+                  {bookingRef}
+                </strong>
+                .
+              </p>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <a
+                  href={getWhatsAppLink(whatsappMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-green-700"
+                >
+                  <MessageCircle size={18} />
+                  Chat on WhatsApp
+                </a>
+
+                <a
+                  href={`tel:${siteConfig.phone}`}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-50 px-5 py-3 text-sm font-black text-ocean transition hover:-translate-y-0.5 hover:bg-blue-100 dark:bg-blue-950/40"
+                >
+                  <Phone size={18} />
+                  Call Reservations
+                </a>
+              </div>
+            </div>
+
             <div className="mx-auto mt-6 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">
               <p>
-                For urgent support, contact us at{" "}
+                You can also email us at{" "}
                 <strong className="text-navy dark:text-white">
                   {siteConfig.email}
-                </strong>{" "}
-                or{" "}
-                <strong className="text-navy dark:text-white">
-                  {siteConfig.phone}
                 </strong>
                 .
               </p>
@@ -79,11 +123,6 @@ export default function ConfirmationPage() {
               <Button variant="secondary" href="/contact">
                 <Mail size={16} />
                 Contact Support
-              </Button>
-
-              <Button variant="ghost">
-                <Download size={16} />
-                Download Summary
               </Button>
             </div>
           </div>
