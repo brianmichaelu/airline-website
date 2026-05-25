@@ -19,7 +19,7 @@ type PaymentMethod =
   | "Bank Transfer";
 
 const fieldClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 disabled:opacity-80 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:disabled:bg-slate-800 dark:disabled:text-slate-400";
 
 const labelClass =
   "mb-2 block text-sm font-bold text-slate-700 dark:text-slate-200";
@@ -32,23 +32,23 @@ const paymentMethods: {
 }[] = [
   {
     name: "M-Pesa",
-    description: "Vodacom Tanzania mobile money",
+    description: "Pay using Vodacom M-Pesa mobile money.",
   },
   {
     name: "Airtel Money",
-    description: "Airtel Tanzania mobile money",
+    description: "Pay using Airtel Money mobile wallet.",
   },
   {
     name: "Mixx by Yas",
-    description: "Yas / Tigo Pesa mobile wallet",
+    description: "Pay using Mixx by Yas / Tigo Pesa.",
   },
   {
     name: "HaloPesa",
-    description: "Halotel mobile money",
+    description: "Pay using HaloPesa mobile money.",
   },
   {
     name: "Bank Transfer",
-    description: "Manual bank payment option",
+    description: "Receive bank transfer instructions after confirmation.",
   },
 ];
 
@@ -117,7 +117,8 @@ export default function BookingForm() {
               Passenger Information
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Enter traveller details for this demo airline booking.
+              Enter traveller details exactly as they should appear on the
+              airline ticket.
             </p>
           </div>
         </div>
@@ -182,7 +183,7 @@ export default function BookingForm() {
             <input
               name="passport"
               className={fieldClass}
-              placeholder="Demo only"
+              placeholder="Enter passport or national ID"
             />
           </label>
         </div>
@@ -196,10 +197,11 @@ export default function BookingForm() {
 
           <div>
             <h2 className="text-xl font-black text-navy dark:text-white">
-              Tanzania Mobile Money Payment
+              Payment Method
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              UI only. No real payment will be processed.
+              Choose how you would like to receive payment instructions for this
+              reservation.
             </p>
           </div>
         </div>
@@ -260,13 +262,13 @@ export default function BookingForm() {
           </label>
 
           <label>
-            <span className={labelClass}>Payment Reference</span>
-            <input
-              name="paymentReference"
-              className={fieldClass}
-              placeholder="Auto-generated after real integration"
-              disabled
-            />
+            <span className={labelClass}>Preferred Contact Time</span>
+            <select name="contactTime" className={fieldClass}>
+              <option>Any time</option>
+              <option>Morning</option>
+              <option>Afternoon</option>
+              <option>Evening</option>
+            </select>
           </label>
         </div>
 
@@ -277,26 +279,25 @@ export default function BookingForm() {
               className="mt-0.5 shrink-0 text-blue-600"
             />
             <p>
-              Demo flow: customer selects{" "}
+              Your selected payment method is{" "}
               <strong className="text-navy dark:text-white">
                 {paymentMethod}
               </strong>
-              , enters a Tanzania mobile money number, then confirms booking.
-              For real payments, this section must be connected to a payment
-              gateway or mobile money API.
+              . Our reservations team will review your request and share the
+              next payment step using the contact details provided.
             </p>
           </div>
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
           <Banknote size={16} />
-          Supports demo display for M-Pesa, Airtel Money, Mixx by Yas,
-          HaloPesa, and bank transfer.
+          Payment options include mobile money and bank transfer for convenient
+          local booking support.
         </div>
       </section>
 
       <Button type="submit" disabled={loading} className="w-full py-4 text-base">
-        {loading ? "Processing Demo Booking..." : "Confirm Booking"}
+        {loading ? "Processing Booking Request..." : "Confirm Reservation"}
       </Button>
     </form>
   );
