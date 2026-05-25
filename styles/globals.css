@@ -26,10 +26,54 @@ body {
   @apply border border-white/30 bg-white/75 shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/10;
 }
 
+/* 
+  Global fix:
+  All inputs, selects, and textareas using input-style will now have visible text
+  in both light mode and dark mode.
+*/
 .input-style {
-  @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-ocean focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/10 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-950;
+  @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-ocean focus:ring-4 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:focus:ring-blue-950;
 }
 
 .label-style {
   @apply mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200;
+}
+
+/* Extra browser fixes for date inputs and selects */
+input,
+select,
+textarea {
+  color: rgb(15 23 42);
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  color: rgb(255 255 255);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgb(148 163 184);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgb(100 116 139);
+}
+
+/* Makes date picker text/icons behave better across browsers */
+input[type="date"] {
+  color-scheme: light;
+}
+
+.dark input[type="date"] {
+  color-scheme: dark;
+}
+
+/* Disabled fields should still be readable */
+input:disabled,
+select:disabled,
+textarea:disabled {
+  @apply cursor-not-allowed bg-slate-100 text-slate-500 opacity-70 dark:bg-slate-800 dark:text-slate-400;
 }
