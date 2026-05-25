@@ -16,6 +16,9 @@ import { flights } from "@/data/flights";
 
 type TripType = "round-trip" | "one-way";
 
+const fieldClass =
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
+
 export default function SearchPage() {
   const [tripType, setTripType] = useState<TripType>("round-trip");
 
@@ -114,7 +117,7 @@ export default function SearchPage() {
                   className={`rounded-full px-5 py-2 text-sm font-bold transition ${
                     tripType === "round-trip"
                       ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200"
                   }`}
                 >
                   Round-trip
@@ -129,7 +132,7 @@ export default function SearchPage() {
                   className={`rounded-full px-5 py-2 text-sm font-bold transition ${
                     tripType === "one-way"
                       ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200"
                   }`}
                 >
                   One-way
@@ -143,7 +146,7 @@ export default function SearchPage() {
                     From
                   </span>
                   <input
-                    className="input-style"
+                    className={fieldClass}
                     value={from}
                     onChange={(event) => setFrom(event.target.value)}
                     placeholder="Dar es Salaam"
@@ -156,7 +159,7 @@ export default function SearchPage() {
                     To
                   </span>
                   <input
-                    className="input-style"
+                    className={fieldClass}
                     value={to}
                     onChange={(event) => setTo(event.target.value)}
                     placeholder="Dubai"
@@ -170,7 +173,7 @@ export default function SearchPage() {
                   </span>
                   <input
                     type="date"
-                    className="input-style"
+                    className={fieldClass}
                     value={departureDate}
                     onChange={(event) => setDepartureDate(event.target.value)}
                   />
@@ -183,7 +186,7 @@ export default function SearchPage() {
                   </span>
                   <input
                     type="date"
-                    className="input-style disabled:cursor-not-allowed disabled:opacity-50"
+                    className={`${fieldClass} disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 disabled:opacity-70 dark:disabled:bg-slate-800 dark:disabled:text-slate-400`}
                     value={returnDate}
                     onChange={(event) => setReturnDate(event.target.value)}
                     disabled={tripType === "one-way"}
@@ -199,7 +202,7 @@ export default function SearchPage() {
                     type="number"
                     min={1}
                     max={9}
-                    className="input-style"
+                    className={fieldClass}
                     value={passengers}
                     onChange={(event) =>
                       setPassengers(Number(event.target.value))
@@ -212,7 +215,7 @@ export default function SearchPage() {
                     Cabin
                   </span>
                   <select
-                    className="input-style"
+                    className={fieldClass}
                     value={cabinClass}
                     onChange={(event) => setCabinClass(event.target.value)}
                   >
@@ -231,7 +234,7 @@ export default function SearchPage() {
                 </div>
               </div>
 
-              <div className="mt-4 rounded-2xl bg-blue-50 px-4 py-3 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+              <div className="mt-4 rounded-2xl bg-blue-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-900 dark:text-slate-300">
                 {hasSearched ? (
                   <span>
                     Showing demo fares for{" "}
@@ -288,7 +291,7 @@ export default function SearchPage() {
                 </Button>
 
                 <select
-                  className="input-style max-w-[190px]"
+                  className={fieldClass}
                   value={sort}
                   onChange={(event) => setSort(event.target.value)}
                 >
