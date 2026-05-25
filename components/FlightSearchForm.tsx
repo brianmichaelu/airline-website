@@ -126,7 +126,7 @@ const labelClass =
   "mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200";
 
 const suggestionBoxClass =
-  "absolute left-0 top-full z-[90] mt-3 max-h-80 w-full min-w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-slate-700 dark:bg-slate-950 sm:min-w-[430px]";
+  "absolute left-0 top-full z-[9999] mt-3 max-h-80 w-full min-w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-slate-700 dark:bg-slate-950 sm:min-w-[430px]";
 
 function getAirportSuggestions(value: string) {
   const searchValue = value.trim().toLowerCase();
@@ -159,8 +159,8 @@ export default function FlightSearchForm() {
 
   const [form, setForm] = useState<SearchFormValues>({
     tripType: "round-trip",
-    from: "Dar es Salaam",
-    to: "Dubai",
+    from: "",
+    to: "",
     departureDate: "",
     returnDate: "",
     passengers: 1,
@@ -242,7 +242,7 @@ export default function FlightSearchForm() {
       transition={{ duration: 0.55 }}
       onSubmit={submit}
       onClick={(event) => event.stopPropagation()}
-      className="glass-card overflow-visible rounded-[2rem] p-4 sm:p-6"
+      className="glass-card relative z-[100] overflow-visible rounded-[2rem] p-4 sm:p-6"
     >
       <div className="mb-5 inline-flex rounded-2xl bg-slate-100 p-1 dark:bg-slate-900">
         {(["round-trip", "one-way"] as TripType[]).map((type) => (
@@ -268,7 +268,7 @@ export default function FlightSearchForm() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <label className="relative block">
+        <label className="relative z-[200] block">
           <span className={labelClass}>
             <PlaneTakeoff size={16} />
             From
@@ -278,11 +278,12 @@ export default function FlightSearchForm() {
             className={fieldClass}
             value={form.from}
             onFocus={() => setActiveSuggestion("from")}
+            onClick={() => setActiveSuggestion("from")}
             onChange={(event) => {
               update("from", event.target.value);
               setActiveSuggestion("from");
             }}
-            placeholder="Dar es Salaam"
+            placeholder="From city or airport"
             autoComplete="off"
           />
 
@@ -333,7 +334,7 @@ export default function FlightSearchForm() {
           )}
         </label>
 
-        <label className="relative block">
+        <label className="relative z-[190] block">
           <span className={labelClass}>
             <PlaneLanding size={16} />
             To
@@ -343,11 +344,12 @@ export default function FlightSearchForm() {
             className={fieldClass}
             value={form.to}
             onFocus={() => setActiveSuggestion("to")}
+            onClick={() => setActiveSuggestion("to")}
             onChange={(event) => {
               update("to", event.target.value);
               setActiveSuggestion("to");
             }}
-            placeholder="Dubai"
+            placeholder="To city or airport"
             autoComplete="off"
           />
 
