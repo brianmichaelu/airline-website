@@ -40,6 +40,11 @@ export default function FlightCard({ flight }: FlightCardProps) {
   const passengers = getPassengerCount(router.query.passengers);
   const totalFare = flight.price * passengers;
 
+  const departureDate = getQueryString(router.query.departureDate);
+  const returnDate = getQueryString(router.query.returnDate);
+  const cabin = getQueryString(router.query.cabin);
+  const tripType = getQueryString(router.query.tripType);
+
   const stopsText =
     flight.stops === 0
       ? "Direct flight"
@@ -48,11 +53,6 @@ export default function FlightCard({ flight }: FlightCardProps) {
   const flightDetailsQuery = new URLSearchParams({
     passengers: String(passengers),
   });
-
-  const departureDate = getQueryString(router.query.departureDate);
-  const returnDate = getQueryString(router.query.returnDate);
-  const cabin = getQueryString(router.query.cabin);
-  const tripType = getQueryString(router.query.tripType);
 
   if (departureDate) {
     flightDetailsQuery.set("departureDate", departureDate);
@@ -79,7 +79,7 @@ export default function FlightCard({ flight }: FlightCardProps) {
       transition={{ duration: 0.35 }}
     >
       <Card className="overflow-hidden p-5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="grid gap-6 xl:grid-cols-[220px_1fr_240px] xl:items-center">
           <div className="flex items-center gap-4">
             <Image
               src={flight.airlineLogo}
@@ -100,7 +100,7 @@ export default function FlightCard({ flight }: FlightCardProps) {
             </div>
           </div>
 
-          <div className="grid flex-1 gap-4 sm:grid-cols-[1fr_auto_1fr] lg:max-w-xl">
+          <div className="grid gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
             <div>
               <p className="text-2xl font-black text-slate-900 dark:text-white">
                 {flight.outbound.departureTime}
@@ -112,9 +112,9 @@ export default function FlightCard({ flight }: FlightCardProps) {
             </div>
 
             <div className="flex items-center justify-center gap-2 text-slate-400 dark:text-slate-500">
-              <span className="h-px w-14 bg-slate-300 dark:bg-slate-700" />
+              <span className="h-px w-12 bg-slate-300 dark:bg-slate-700" />
               <Plane size={18} />
-              <span className="h-px w-14 bg-slate-300 dark:bg-slate-700" />
+              <span className="h-px w-12 bg-slate-300 dark:bg-slate-700" />
             </div>
 
             <div className="sm:text-right">
@@ -128,27 +128,31 @@ export default function FlightCard({ flight }: FlightCardProps) {
             </div>
           </div>
 
-          <div className="min-w-[220px] rounded-3xl bg-skysoft p-4 text-center dark:bg-white/10">
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
-              Per passenger
-            </p>
+          <div className="rounded-3xl bg-skysoft p-4 text-center dark:bg-white/10 xl:self-stretch">
+            <div className="flex h-full flex-col justify-center">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-300">
+                Per passenger
+              </p>
 
-            <p className="text-3xl font-black text-ocean">
-              {formatMoney(flight.price, flight.currency)}
-            </p>
+              <p className="mt-1 text-3xl font-black text-ocean">
+                {formatMoney(flight.price, flight.currency)}
+              </p>
 
-            <div className="mt-2 rounded-2xl bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300">
-              Total for {passengers}{" "}
-              {passengers === 1 ? "traveller" : "travellers"}:{" "}
-              <span className="text-navy dark:text-white">
-                {formatMoney(totalFare, flight.currency)}
-              </span>
+              <div className="mt-3 rounded-2xl bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300">
+                <span className="block">
+                  Total for {passengers}{" "}
+                  {passengers === 1 ? "traveller" : "travellers"}
+                </span>
+                <span className="mt-0.5 block text-base font-black text-navy dark:text-white">
+                  {formatMoney(totalFare, flight.currency)}
+                </span>
+              </div>
+
+              <Button href={flightDetailsHref} className="mt-3 w-full">
+                Select Flight
+                <ArrowRight size={16} />
+              </Button>
             </div>
-
-            <Button href={flightDetailsHref} className="mt-3 w-full">
-              Select Flight
-              <ArrowRight size={16} />
-            </Button>
           </div>
         </div>
 
