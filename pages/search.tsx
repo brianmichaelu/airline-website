@@ -7,7 +7,8 @@ import {
   SlidersHorizontal,
   Users,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
 import FiltersSidebar from "@/components/FiltersSidebar";
 import FlightCard from "@/components/FlightCard";
 import Layout from "@/components/Layout";
@@ -17,6 +18,8 @@ import Card from "@/components/ui/Card";
 import { flights } from "@/data/flights";
 
 type TripType = "round-trip" | "one-way";
+
+type CabinClass = "Economy" | "Premium Economy" | "Business" | "First Class";
 
 type Airport = {
   city: string;
@@ -145,15 +148,45 @@ function formatAirportValue(airport: Airport) {
   return `${airport.city} (${airport.code})`;
 }
 
-export default function SearchPage() {
-  const [tripType, setTripType] = useState<TripType>("round-trip");
+function getQueryString(value: string | string[] | undefined) {
+  if (typeof value === "string") {
+    return value;
+  }
 
+  if (Array.isArray(value)) {
+    return value[0] || "";
+  }
+
+  return "";
+}
+
+function getSafeTripType(value: string): TripType {
+  return value === "one-way" ? "one-way" : "round-trip";
+}
+
+function getSafeCabin(value: string): CabinClass {
+  const allowedCabins: CabinClass[] = [
+    "Economy",
+    "Premium Economy",
+    "Business",
+    "First Class",
+  ];
+
+  return allowedCabins.includes(value as CabinClass)
+    ? (value as CabinClass)
+    : "Economy";
+}
+
+export default function SearchPage() {
+  const router = useRouter();
+
+  const [tripType, setTripType] = useState<TripType>("round-trip");
   const [from, setFrom] = useState("Dar es Salaam");
   const [to, setTo] = useState("Dubai");
   const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
-  const [cabinClass, setCabinClass] = useState("Economy");
+  const [cabinClass, setCabinClass] = useState<CabinClass>("Economy");
 
   const [activeSuggestion, setActiveSuggestion] = useState<
     "from" | "to" | null
@@ -165,6 +198,61 @@ export default function SearchPage() {
   const [sort, setSort] = useState("recommended");
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    const queryFrom = getQueryString(router.query.from);
+    const queryTo = getQueryString(router.query.to);
+    const queryDepartureDate = getQueryString(router.query.departureDate);
+    const queryReturnDate = getQueryString(router.query.returnDate);
+    const queryPassengers = getQueryString(router.query.passengers);
+    const queryCabin = getQueryString(router.query.cabin);
+    const queryTripType = getQueryString(router.query.tripType);
+
+    if (queryFrom) {
+      setFrom(queryFrom);
+    }
+
+    if (queryTo) {
+      setTo(queryTo);
+    }
+
+    if (queryDepartureDate) {
+      setDepartureDate(queryDepartureDate);
+    }
+
+    if (queryReturnDate) {
+      setReturnDate(queryReturnDate);
+    }
+
+    if (queryPassengers) {
+      const parsedPassengers = Number(queryPassengers);
+
+      if (!Number.isNaN(parsedPassengers) && parsedPassengers > 0) {
+        setPassengers(parsedPassengers);
+      }
+    }
+
+    if (queryCabin) {
+      setCabinClass(getSafeCabin(queryCabin));
+    }
+
+    if (queryTripType) {
+      const safeTripType = getSafeTripType(queryTripType);
+      setTripType(safeTripType);
+
+      if (safeTripType === "one-way") {
+        setReturnDate("");
+      }
+    }
+
+    if (queryFrom || queryTo || queryDepartureDate || queryReturnDate) {
+      setHasSearched(true);
+    }
+  }, [router.isReady, router.query]);
 
   const fromSuggestions = useMemo(() => getAirportSuggestions(from), [from]);
   const toSuggestions = useMemo(() => getAirportSuggestions(to), [to]);
@@ -222,6 +310,23 @@ export default function SearchPage() {
     setActiveSuggestion(null);
     setHasSearched(true);
     simulateLoading();
+
+    router.push(
+      {
+        pathname: "/search",
+        query: {
+          from,
+          to,
+          departureDate,
+          returnDate,
+          passengers,
+          cabin: cabinClass,
+          tripType,
+        },
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
   const chooseFromAirport = (airport: Airport) => {
@@ -250,9 +355,7 @@ export default function SearchPage() {
         onClick={() => setActiveSuggestion(null)}
       >
         <div className="mx-auto max-w-7xl">
-          <p className="font-semibold text-blue-100">
-            Flight Search
-          </p>
+          <p className="font-semibold text-blue-100">Flight Search</p>
 
           <h1 className="mt-2 text-4xl font-black sm:text-5xl">
             Compare available flight options
@@ -505,7 +608,9 @@ export default function SearchPage() {
                     <select
                       className={fieldClass}
                       value={cabinClass}
-                      onChange={(event) => setCabinClass(event.target.value)}
+                      onChange={(event) =>
+                        setCabinClass(event.target.value as CabinClass)
+                      }
                     >
                       <option>Economy</option>
                       <option>Premium Economy</option>
