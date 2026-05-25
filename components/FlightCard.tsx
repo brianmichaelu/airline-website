@@ -11,21 +11,24 @@ interface FlightCardProps {
   flight: Flight;
 }
 
-function getPassengerCount(value: string | string[] | undefined) {
+function getQueryString(value: string | string[] | undefined) {
   if (typeof value === "string") {
-    const parsed = Number(value);
-
-    if (!Number.isNaN(parsed) && parsed > 0) {
-      return parsed;
-    }
+    return value;
   }
 
   if (Array.isArray(value)) {
-    const parsed = Number(value[0]);
+    return value[0] || "";
+  }
 
-    if (!Number.isNaN(parsed) && parsed > 0) {
-      return parsed;
-    }
+  return "";
+}
+
+function getPassengerCount(value: string | string[] | undefined) {
+  const rawValue = getQueryString(value);
+  const parsed = Number(rawValue);
+
+  if (!Number.isNaN(parsed) && parsed > 0) {
+    return parsed;
   }
 
   return 1;
@@ -41,6 +44,33 @@ export default function FlightCard({ flight }: FlightCardProps) {
     flight.stops === 0
       ? "Direct flight"
       : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`;
+
+  const flightDetailsQuery = new URLSearchParams({
+    passengers: String(passengers),
+  });
+
+  const departureDate = getQueryString(router.query.departureDate);
+  const returnDate = getQueryString(router.query.returnDate);
+  const cabin = getQueryString(router.query.cabin);
+  const tripType = getQueryString(router.query.tripType);
+
+  if (departureDate) {
+    flightDetailsQuery.set("departureDate", departureDate);
+  }
+
+  if (returnDate) {
+    flightDetailsQuery.set("returnDate", returnDate);
+  }
+
+  if (cabin) {
+    flightDetailsQuery.set("cabin", cabin);
+  }
+
+  if (tripType) {
+    flightDetailsQuery.set("tripType", tripType);
+  }
+
+  const flightDetailsHref = `/flight/${flight.id}?${flightDetailsQuery.toString()}`;
 
   return (
     <motion.div
@@ -98,7 +128,7 @@ export default function FlightCard({ flight }: FlightCardProps) {
             </div>
           </div>
 
-          <div className="min-w-[210px] rounded-3xl bg-skysoft p-4 text-center dark:bg-white/10">
+          <div className="min-w-[220px] rounded-3xl bg-skysoft p-4 text-center dark:bg-white/10">
             <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
               Per passenger
             </p>
@@ -115,10 +145,7 @@ export default function FlightCard({ flight }: FlightCardProps) {
               </span>
             </div>
 
-            <Button
-              href={`/flight/${flight.id}?passengers=${passengers}`}
-              className="mt-3 w-full"
-            >
+            <Button href={flightDetailsHref} className="mt-3 w-full">
               Select Flight
               <ArrowRight size={16} />
             </Button>
