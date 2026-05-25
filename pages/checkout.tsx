@@ -5,13 +5,38 @@ import Card from "@/components/ui/Card";
 import { flights, getFlightById } from "@/data/flights";
 import { formatMoney } from "@/lib/format";
 
+function getPassengerCount(value: string | string[] | undefined) {
+  if (typeof value === "string") {
+    const parsed = Number(value);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  if (Array.isArray(value)) {
+    const parsed = Number(value[0]);
+
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return 1;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
 
   const flightId =
     typeof router.query.flight === "string" ? router.query.flight : flights[0].id;
 
+  const passengers = getPassengerCount(router.query.passengers);
+
   const flight = getFlightById(flightId) || flights[0];
+
+  const farePerPassenger = flight.price;
+  const totalFare = farePerPassenger * passengers;
 
   return (
     <Layout
@@ -71,10 +96,37 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
+                  <p className="text-slate-500 dark:text-slate-400">
+                    Passengers
+                  </p>
+                  <p className="font-bold text-slate-900 dark:text-white">
+                    {passengers} {passengers === 1 ? "traveller" : "travellers"}
+                  </p>
+                </div>
+
+                <div>
                   <p className="text-slate-500 dark:text-slate-400">Baggage</p>
                   <p className="font-bold text-slate-900 dark:text-white">
                     {flight.baggage}
                   </p>
+                </div>
+              </div>
+
+              <div className="my-6 h-px bg-slate-200 dark:bg-white/10" />
+
+              <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                <div className="flex items-center justify-between gap-4">
+                  <span>Fare per passenger</span>
+                  <strong className="text-slate-900 dark:text-white">
+                    {formatMoney(farePerPassenger, flight.currency)}
+                  </strong>
+                </div>
+
+                <div className="flex items-center justify-between gap-4">
+                  <span>Passengers</span>
+                  <strong className="text-slate-900 dark:text-white">
+                    × {passengers}
+                  </strong>
                 </div>
               </div>
 
@@ -86,7 +138,7 @@ export default function CheckoutPage() {
                 </span>
 
                 <span className="text-3xl font-black text-ocean">
-                  {formatMoney(flight.price, flight.currency)}
+                  {formatMoney(totalFare, flight.currency)}
                 </span>
               </div>
 
