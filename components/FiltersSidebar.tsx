@@ -45,7 +45,7 @@ export default function FiltersSidebar({
   ];
 
   return (
-    <Card className="sticky top-24 p-5">
+    <Card className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto p-5">
       <h2 className="text-lg font-black text-navy dark:text-white">
         Filter Flights
       </h2>
