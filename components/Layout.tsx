@@ -11,17 +11,26 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, title, description }: LayoutProps) {
-  const pageTitle = title ? `${title} | ${siteConfig.name}` : `${siteConfig.name} | Modern Flight Booking`;
+  const pageTitle = title
+    ? `${title} | ${siteConfig.name}`
+    : `${siteConfig.name} | Flight Reservations Made Simple`;
+
+  const pageDescription =
+    description ||
+    "Search, compare, and reserve regional and international airline tickets with SkyLink Travels. Get flight options, fare support, and local booking assistance.";
 
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
-        <meta name="description" content={description || "Search and book airline tickets with a modern, simple flight booking website."} />
+        <meta name="description" content={pageDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+
       <Navbar />
+
       <main>{children}</main>
+
       <Footer />
     </>
   );
