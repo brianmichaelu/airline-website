@@ -1,5 +1,6 @@
 import {
   CalendarDays,
+  MapPin,
   Plane,
   Search,
   SlidersHorizontal,
@@ -16,8 +17,131 @@ import { flights } from "@/data/flights";
 
 type TripType = "round-trip" | "one-way";
 
+type Airport = {
+  city: string;
+  country: string;
+  airport: string;
+  code: string;
+};
+
+const airports: Airport[] = [
+  {
+    city: "Dar es Salaam",
+    country: "Tanzania",
+    airport: "Julius Nyerere International Airport",
+    code: "DAR",
+  },
+  {
+    city: "Zanzibar",
+    country: "Tanzania",
+    airport: "Abeid Amani Karume International Airport",
+    code: "ZNZ",
+  },
+  {
+    city: "Kilimanjaro",
+    country: "Tanzania",
+    airport: "Kilimanjaro International Airport",
+    code: "JRO",
+  },
+  {
+    city: "Mwanza",
+    country: "Tanzania",
+    airport: "Mwanza Airport",
+    code: "MWZ",
+  },
+  {
+    city: "Nairobi",
+    country: "Kenya",
+    airport: "Jomo Kenyatta International Airport",
+    code: "NBO",
+  },
+  {
+    city: "Mombasa",
+    country: "Kenya",
+    airport: "Moi International Airport",
+    code: "MBA",
+  },
+  {
+    city: "Entebbe",
+    country: "Uganda",
+    airport: "Entebbe International Airport",
+    code: "EBB",
+  },
+  {
+    city: "Kigali",
+    country: "Rwanda",
+    airport: "Kigali International Airport",
+    code: "KGL",
+  },
+  {
+    city: "Addis Ababa",
+    country: "Ethiopia",
+    airport: "Bole International Airport",
+    code: "ADD",
+  },
+  {
+    city: "Doha",
+    country: "Qatar",
+    airport: "Hamad International Airport",
+    code: "DOH",
+  },
+  {
+    city: "Dubai",
+    country: "United Arab Emirates",
+    airport: "Dubai International Airport",
+    code: "DXB",
+  },
+  {
+    city: "Istanbul",
+    country: "Turkey",
+    airport: "Istanbul Airport",
+    code: "IST",
+  },
+  {
+    city: "London",
+    country: "United Kingdom",
+    airport: "Heathrow Airport",
+    code: "LHR",
+  },
+  {
+    city: "Mumbai",
+    country: "India",
+    airport: "Chhatrapati Shivaji Maharaj International Airport",
+    code: "BOM",
+  },
+  {
+    city: "Johannesburg",
+    country: "South Africa",
+    airport: "O. R. Tambo International Airport",
+    code: "JNB",
+  },
+];
+
 const fieldClass =
   "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
+
+const suggestionBoxClass =
+  "absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-slate-700 dark:bg-slate-950";
+
+function getAirportSuggestions(value: string) {
+  const searchValue = value.trim().toLowerCase();
+
+  if (!searchValue) {
+    return airports.slice(0, 6);
+  }
+
+  return airports
+    .filter((airport) => {
+      const searchableText = `${airport.city} ${airport.country} ${airport.airport} ${airport.code}`.toLowerCase();
+
+      return searchableText.includes(searchValue);
+    })
+    .slice(0, 6);
+}
+
+function formatAirportValue(airport: Airport) {
+  return `${airport.city} (${airport.code})`;
+}
 
 export default function SearchPage() {
   const [tripType, setTripType] = useState<TripType>("round-trip");
@@ -29,12 +153,19 @@ export default function SearchPage() {
   const [passengers, setPassengers] = useState(1);
   const [cabinClass, setCabinClass] = useState("Economy");
 
+  const [activeSuggestion, setActiveSuggestion] = useState<"from" | "to" | null>(
+    null
+  );
+
   const [selectedAirline, setSelectedAirline] = useState("All");
   const [selectedStops, setSelectedStops] = useState("Any");
   const [maxPrice, setMaxPrice] = useState(900);
   const [sort, setSort] = useState("recommended");
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+
+  const fromSuggestions = useMemo(() => getAirportSuggestions(from), [from]);
+  const toSuggestions = useMemo(() => getAirportSuggestions(to), [to]);
 
   const filteredFlights = useMemo(() => {
     let results = flights.filter((flight) => flight.price <= maxPrice);
@@ -86,8 +217,19 @@ export default function SearchPage() {
       return;
     }
 
+    setActiveSuggestion(null);
     setHasSearched(true);
     simulateLoading();
+  };
+
+  const chooseFromAirport = (airport: Airport) => {
+    setFrom(formatAirportValue(airport));
+    setActiveSuggestion(null);
+  };
+
+  const chooseToAirport = (airport: Airport) => {
+    setTo(formatAirportValue(airport));
+    setActiveSuggestion(null);
   };
 
   return (
@@ -140,30 +282,112 @@ export default function SearchPage() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.1fr_1.1fr_1fr_1fr_0.8fr_1fr_auto]">
-                <label className="block">
+                <label className="relative block">
                   <span className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
                     <Plane size={16} />
                     From
                   </span>
+
                   <input
                     className={fieldClass}
                     value={from}
-                    onChange={(event) => setFrom(event.target.value)}
+                    onFocus={() => setActiveSuggestion("from")}
+                    onChange={(event) => {
+                      setFrom(event.target.value);
+                      setActiveSuggestion("from");
+                    }}
                     placeholder="Dar es Salaam"
+                    autoComplete="off"
                   />
+
+                  {activeSuggestion === "from" && (
+                    <div className={suggestionBoxClass}>
+                      {fromSuggestions.length > 0 ? (
+                        fromSuggestions.map((airport) => (
+                          <button
+                            key={`${airport.code}-from`}
+                            type="button"
+                            onMouseDown={() => chooseFromAirport(airport)}
+                            className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-blue-50 dark:hover:bg-slate-900"
+                          >
+                            <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40">
+                              <MapPin size={17} />
+                            </span>
+
+                            <span>
+                              <span className="block font-black text-navy dark:text-white">
+                                {airport.city}{" "}
+                                <span className="text-blue-600">
+                                  ({airport.code})
+                                </span>
+                              </span>
+                              <span className="mt-0.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                {airport.airport} • {airport.country}
+                              </span>
+                            </span>
+                          </button>
+                        ))
+                      ) : (
+                        <p className="px-3 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                          No matching airport found.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </label>
 
-                <label className="block">
+                <label className="relative block">
                   <span className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
                     <Plane size={16} />
                     To
                   </span>
+
                   <input
                     className={fieldClass}
                     value={to}
-                    onChange={(event) => setTo(event.target.value)}
+                    onFocus={() => setActiveSuggestion("to")}
+                    onChange={(event) => {
+                      setTo(event.target.value);
+                      setActiveSuggestion("to");
+                    }}
                     placeholder="Dubai"
+                    autoComplete="off"
                   />
+
+                  {activeSuggestion === "to" && (
+                    <div className={suggestionBoxClass}>
+                      {toSuggestions.length > 0 ? (
+                        toSuggestions.map((airport) => (
+                          <button
+                            key={`${airport.code}-to`}
+                            type="button"
+                            onMouseDown={() => chooseToAirport(airport)}
+                            className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-blue-50 dark:hover:bg-slate-900"
+                          >
+                            <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40">
+                              <MapPin size={17} />
+                            </span>
+
+                            <span>
+                              <span className="block font-black text-navy dark:text-white">
+                                {airport.city}{" "}
+                                <span className="text-blue-600">
+                                  ({airport.code})
+                                </span>
+                              </span>
+                              <span className="mt-0.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                {airport.airport} • {airport.country}
+                              </span>
+                            </span>
+                          </button>
+                        ))
+                      ) : (
+                        <p className="px-3 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                          No matching airport found.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </label>
 
                 <label className="block">
@@ -238,7 +462,9 @@ export default function SearchPage() {
                 {hasSearched ? (
                   <span>
                     Showing demo fares for{" "}
-                    <strong className="text-navy dark:text-white">{from}</strong>{" "}
+                    <strong className="text-navy dark:text-white">
+                      {from}
+                    </strong>{" "}
                     to{" "}
                     <strong className="text-navy dark:text-white">{to}</strong>
                     {departureDate && <> departing {departureDate}</>}
