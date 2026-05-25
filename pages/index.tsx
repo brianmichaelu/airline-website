@@ -277,7 +277,8 @@ export default function HomePage() {
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <input
-                className="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white/20 px-4 py-3 font-semibold text-white placeholder:text-blue-100 outline-none focus:border-white/60"
+                type="email"
+                className="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white px-4 py-3 font-semibold text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-blue-200 focus:ring-4 focus:ring-white/20"
                 placeholder="Enter email address"
               />
               <Button variant="secondary">Subscribe</Button>
