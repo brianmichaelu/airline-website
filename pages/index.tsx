@@ -1,5 +1,14 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Globe2, ShieldCheck, Ticket } from "lucide-react";
+import {
+  BellRing,
+  CheckCircle2,
+  Clock3,
+  Globe2,
+  Headphones,
+  PlaneTakeoff,
+  ShieldCheck,
+  Ticket,
+} from "lucide-react";
 import Image from "next/image";
 import Hero from "@/components/Hero";
 import Layout from "@/components/Layout";
@@ -7,35 +16,131 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
 const features = [
-  { icon: Ticket, title: "Simple ticket booking", text: "Search, compare, view details, and complete a demo checkout without accounts." },
-  { icon: ShieldCheck, title: "Clean payment UI", text: "Payment screen is UI only, making it safe for demo and portfolio use." },
-  { icon: Globe2, title: "Responsive layout", text: "Built with mobile, tablet, and desktop users in mind." },
+  {
+    icon: Ticket,
+    title: "Easy flight booking",
+    text: "Search popular routes, compare fares, review flight details, and reserve your ticket in a simple guided process.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Secure payment options",
+    text: "Choose flexible local payment options including mobile money and bank transfer for a smoother booking experience.",
+  },
+  {
+    icon: Headphones,
+    title: "Local travel support",
+    text: "Get help with flight options, booking changes, travel dates, and passenger details from a responsive reservations team.",
+  },
+];
+
+const destinations = [
+  {
+    image: "/images/destination-1.png",
+    city: "Dubai",
+    route: "Dar es Salaam to Dubai",
+    text: "Popular for business trips, shopping, family holidays, and convenient onward connections.",
+  },
+  {
+    image: "/images/destination-2.png",
+    city: "Nairobi",
+    route: "Dar es Salaam to Nairobi",
+    text: "Fast regional flights for meetings, short visits, weekend travel, and East African connections.",
+  },
+  {
+    image: "/images/destination-3.png",
+    city: "London",
+    route: "Dar es Salaam to London",
+    text: "Long-haul travel options with flexible cabin classes and reliable international airline partners.",
+  },
+  {
+    image: "/images/destination-4.png",
+    city: "Istanbul",
+    route: "Dar es Salaam to Istanbul",
+    text: "A strong connection point for Europe, Asia, and Middle East travel with frequent flight options.",
+  },
 ];
 
 const faqs = [
-  ["Is this a real booking engine?", "No. This is a frontend demo using mock flight data only."],
-  ["Does it include login or signup?", "No. The website is intentionally public and simple."],
-  ["Can real API/payment be added later?", "Yes. The structure is ready for backend and payment integration later."],
+  [
+    "How do I book a flight?",
+    "Enter your departure city, destination, travel dates, passengers, and cabin class. Then compare available fares and continue to the booking page.",
+  ],
+  [
+    "Can I pay with mobile money?",
+    "Yes. The booking page supports Tanzania-friendly payment choices such as M-Pesa, Airtel Money, Mixx by Yas, HaloPesa, and bank transfer.",
+  ],
+  [
+    "Can I book one-way and return flights?",
+    "Yes. You can search for both one-way and round-trip tickets depending on your travel plan.",
+  ],
+  [
+    "Can your team help me choose a flight?",
+    "Yes. Customers can contact the reservations team for help with routes, travel dates, fare options, and passenger information.",
+  ],
+];
+
+const stats = [
+  { value: "24/7", label: "Online flight search" },
+  { value: "15+", label: "Popular destinations" },
+  { value: "5", label: "Payment options" },
 ];
 
 export default function HomePage() {
   return (
-    <Layout>
+    <Layout
+      title="SkyLink Travels"
+      description="Search, compare, and reserve airline tickets with SkyLink Travels. Find regional and international flights with flexible payment options."
+    >
       <Hero />
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 max-w-2xl">
-            <p className="font-bold text-ocean">Why book here</p>
-            <h2 className="mt-2 text-3xl font-black text-navy dark:text-white sm:text-4xl">Modern flight booking without the clutter.</h2>
+          <div className="mb-10 grid gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-end">
+            <div>
+              <p className="font-bold text-ocean">Why book with us</p>
+              <h2 className="mt-2 text-3xl font-black text-navy dark:text-white sm:text-4xl">
+                Flight booking made simple, clear, and convenient.
+              </h2>
+              <p className="mt-4 max-w-2xl text-slate-600 dark:text-slate-300">
+                SkyLink Travels helps customers compare airline ticket options
+                for regional and international routes, with a clean booking
+                process and local support when it matters.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {stats.map((stat) => (
+                <Card key={stat.label} className="p-4 text-center">
+                  <p className="text-2xl font-black text-ocean">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    {stat.label}
+                  </p>
+                </Card>
+              ))}
+            </div>
           </div>
+
           <div className="grid gap-6 md:grid-cols-3">
             {features.map((feature, index) => (
-              <motion.div key={feature.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }}>
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+              >
                 <Card className="h-full p-6">
-                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/50"><feature.icon /></span>
-                  <h3 className="mt-5 text-xl font-black text-navy dark:text-white">{feature.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{feature.text}</p>
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/50">
+                    <feature.icon />
+                  </span>
+                  <h3 className="mt-5 text-xl font-black text-navy dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {feature.text}
+                  </p>
                 </Card>
               </motion.div>
             ))}
@@ -47,17 +152,81 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-2">
           <div>
             <p className="font-bold text-ocean">Featured destinations</p>
-            <h2 className="mt-2 text-3xl font-black text-navy dark:text-white sm:text-4xl">Promotional cards using PNG placeholders.</h2>
-            <p className="mt-4 text-slate-600 dark:text-slate-300">Replace these demo PNG images later with real destination banners or airline promotions.</p>
+            <h2 className="mt-2 text-3xl font-black text-navy dark:text-white sm:text-4xl">
+              Popular routes for business, family, and holiday travel.
+            </h2>
+            <p className="mt-4 text-slate-600 dark:text-slate-300">
+              Explore frequently requested destinations from Tanzania to East
+              Africa, the Middle East, Europe, and beyond. Compare fares and
+              choose the route that fits your schedule.
+            </p>
+
             <div className="mt-6 flex flex-wrap gap-3">
-              {['Dubai', 'Nairobi', 'London', 'New York'].map((city) => <span key={city} className="rounded-full bg-white px-4 py-2 text-sm font-bold text-navy shadow dark:bg-white/10 dark:text-white">{city}</span>)}
+              {["Dubai", "Nairobi", "Istanbul", "London", "Doha"].map(
+                (city) => (
+                  <span
+                    key={city}
+                    className="rounded-full bg-white px-4 py-2 text-sm font-bold text-navy shadow dark:bg-white/10 dark:text-white"
+                  >
+                    {city}
+                  </span>
+                )
+              )}
+            </div>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <div className="flex gap-3">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-ocean shadow dark:bg-white/10">
+                  <Clock3 size={20} />
+                </span>
+                <div>
+                  <h3 className="font-black text-navy dark:text-white">
+                    Flexible travel dates
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                    Compare options across different dates and cabin classes.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-ocean shadow dark:bg-white/10">
+                  <Globe2 size={20} />
+                </span>
+                <div>
+                  <h3 className="font-black text-navy dark:text-white">
+                    Regional and international
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                    Find routes across Africa, the Middle East, Europe, and
+                    Asia.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
-            {[1, 2, 3, 4].map((item) => (
-              <Card key={item} className="overflow-hidden">
-                <Image src={`/images/destination-${item}.png`} alt={`Destination banner ${item}`} width={500} height={320} className="h-44 w-full object-cover" />
-                <div className="p-4"><p className="font-black">Special Fare #{item}</p><p className="text-sm text-slate-500">Limited demo promo</p></div>
+            {destinations.map((destination) => (
+              <Card key={destination.city} className="overflow-hidden">
+                <Image
+                  src={destination.image}
+                  alt={`${destination.city} flight destination`}
+                  width={500}
+                  height={320}
+                  className="h-44 w-full object-cover"
+                />
+                <div className="p-4">
+                  <p className="text-lg font-black text-navy dark:text-white">
+                    {destination.city}
+                  </p>
+                  <p className="mt-1 text-sm font-bold text-ocean">
+                    {destination.route}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                    {destination.text}
+                  </p>
+                </div>
               </Card>
             ))}
           </div>
@@ -67,23 +236,59 @@ export default function HomePage() {
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2">
           <Card className="p-8">
-            <h2 className="text-3xl font-black text-navy dark:text-white">FAQ</h2>
+            <div className="flex items-center gap-3">
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-50 text-ocean dark:bg-blue-950/50">
+                <PlaneTakeoff size={24} />
+              </span>
+              <div>
+                <p className="font-bold text-ocean">Travel questions</p>
+                <h2 className="text-3xl font-black text-navy dark:text-white">
+                  FAQ
+                </h2>
+              </div>
+            </div>
+
             <div className="mt-6 space-y-4">
               {faqs.map(([question, answer]) => (
-                <details key={question} className="rounded-2xl border border-slate-200 p-4 dark:border-white/10">
-                  <summary className="cursor-pointer font-bold">{question}</summary>
-                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{answer}</p>
+                <details
+                  key={question}
+                  className="rounded-2xl border border-slate-200 p-4 dark:border-white/10"
+                >
+                  <summary className="cursor-pointer font-bold text-navy dark:text-white">
+                    {question}
+                  </summary>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {answer}
+                  </p>
                 </details>
               ))}
             </div>
           </Card>
+
           <Card className="relative overflow-hidden bg-flight-gradient p-8 text-white">
-            <CheckCircle2 className="mb-5" size={40} />
-            <h2 className="text-3xl font-black">Get fare updates in your inbox.</h2>
-            <p className="mt-3 text-blue-50">Newsletter UI section for collecting interest. Connect it to a real email service later.</p>
+            <BellRing className="mb-5" size={40} />
+            <h2 className="text-3xl font-black">
+              Get fare alerts and travel updates.
+            </h2>
+            <p className="mt-3 text-blue-50">
+              Subscribe to receive special fare alerts, seasonal travel offers,
+              and destination updates from SkyLink Travels.
+            </p>
+
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <input className="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white/20 px-4 py-3 text-white placeholder:text-blue-100 outline-none" placeholder="Enter email address" />
+              <input
+                className="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white/20 px-4 py-3 font-semibold text-white placeholder:text-blue-100 outline-none focus:border-white/60"
+                placeholder="Enter email address"
+              />
               <Button variant="secondary">Subscribe</Button>
+            </div>
+
+            <div className="mt-6 flex items-start gap-3 rounded-2xl bg-white/10 p-4 text-sm text-blue-50">
+              <CheckCircle2 className="mt-0.5 shrink-0" size={18} />
+              <p>
+                Customers can also contact our reservations team directly for
+                route advice, fare checks, and booking assistance.
+              </p>
             </div>
           </Card>
         </div>
