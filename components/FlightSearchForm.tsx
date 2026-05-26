@@ -449,16 +449,18 @@ export default function FlightSearchForm() {
             Passengers
           </span>
 
-          <input
-            type="number"
-            min={1}
-            max={9}
-            className={fieldClass}
-            value={form.passengers}
-            onChange={(event) =>
-              update("passengers", Number(event.target.value))
-            }
-          />
+          <select
+  className={fieldClass}
+  value={form.passengers}
+  onChange={(event) => update("passengers", Number(event.target.value))}
+>
+  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((passengerCount) => (
+    <option key={passengerCount} value={passengerCount}>
+      {passengerCount} {passengerCount === 1 ? "Passenger" : "Passengers"}
+    </option>
+  ))}
+</select>
+
         </label>
 
         <label>
