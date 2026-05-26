@@ -633,16 +633,18 @@ export default function SearchPage() {
                       <Users size={16} />
                       Passengers
                     </span>
-                    <input
-                      type="number"
-                      min={1}
-                      max={9}
-                      className={fieldClass}
-                      value={passengers}
-                      onChange={(event) =>
-                        setPassengers(Number(event.target.value))
-                      }
-                    />
+                    
+                    <select
+  className={fieldClass}
+  value={passengers}
+  onChange={(event) => setPassengers(Number(event.target.value))}
+>
+  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((passengerCount) => (
+    <option key={passengerCount} value={passengerCount}>
+      {passengerCount}
+    </option>
+  ))}
+</select>
                   </label>
 
                   <label className="block">
